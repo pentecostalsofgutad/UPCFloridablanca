@@ -1,1 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pentecostals of Gutad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            50: '#fbf8ea',
+                            100: '#f5eecc',
+                            200: '#eedb9b',
+                            300: '#e5c361',
+                            400: '#dfae36',
+                            500: '#d59424',
+                            600: '#b8741b',
+                            700: '#945418',
+                            800: '#7a431a',
+                            900: '#663719',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                        serif: ['Merriweather', 'ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3">
+                    <img id="nav-logo" src="https://ui-avatars.com/api/?name=PG&background=d59424&color=fff&rounded=true" alt="Church Logo" class="h-12 w-12 object-cover rounded-full border-2 border-gold-500">
+                    <div class="flex flex-col">
+                        <span class="font-serif font-bold text-xl text-gray-900 leading-tight">Pentecostals of Gutad</span>
+                        <span class="text-xs text-gold-600 font-medium">Floridablanca, Pampanga</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#home" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Home</a>
+                    <a href="#announcements" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Announcements</a>
+                    <a href="#events" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Events & Gallery</a>
+                    <a href="#resources" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Resources</a>
+                    <button id="login-btn" onclick="handleLogin()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full font-medium transition-colors">
+                        <i class="fab fa-google text-red-500"></i> Admin Access
+                    </button>
+                    <button id="logout-btn" onclick="handleLogout()" class="hidden flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-full font-medium transition-colors">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-gray-900 focus:outline-none p-2">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 px-4 pt-2 pb-4 space-y-1 shadow-lg">
+            <a href="#home" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Home</a>
+            <a href="#announcements" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Announcements</a>
+            <a href="#events" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Events & Gallery</a>
+            <a href="#resources" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Resources</a>
+            <button id="mobile-login-btn" onclick="handleLogin(); toggleMobileMenu();" class="w-full text-left mt-4 px-3 py-2 text-base font-medium text-gold-600 bg-gold-50 rounded-md"><i class="fab fa-google text-red-500 mr-2"></i>Admin Login</button>
+            <button id="mobile-logout-btn" onclick="handleLogout(); toggleMobileMenu();" class="hidden w-full text-left mt-4 px-3 py-2 text-base font-medium text-red-600 bg-red-50 rounded-md">Logout</button>
+        </div>
+    </nav>
+
+    <!-- ADMIN DASHBOARD (Hidden by default) -->
+    <section id="admin-dashboard" class="hidden bg-gray-900 text-white border-b-4 border-gold-500 py-8 shadow-inner">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-700">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-cogs text-3xl text-gold-500"></i>
+                    <h2 class="text-2xl font-bold font-serif">Admin Control Panel</h2>
+                </div>
+                <span class="text-xs text-gray-400 bg-gray-800 px-3 py-1 rounded-full"><i class="fas fa-info-circle mr-1"></i> Max file size: 750KB</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Update Logo -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col">
+                    <h3 class="text-lg font-semibold text-gold-400 mb-4"><i class="fas fa-church mr-2"></i>Update Logo</h3>
+                    <input type="file" id="logo-upload" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gold-500 file:text-white hover:file:bg-gold-600 mb-4">
+                    <button onclick="updateLogo()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Save Logo</button>
+                </div>
+
+                <!-- Post Announcement -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col">
+                    <h3 class="text-lg font-semibold text-gold-400 mb-4"><i class="fas fa-bullhorn mr-2"></i>New Announcement</h3>
+                    <input type="text" id="ann-title" placeholder="Title" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none">
+                    <textarea id="ann-content" placeholder="Content details..." rows="2" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none"></textarea>
+                    <label class="block text-xs text-gray-400 mb-1">Thumbnail Image (Max 750KB)</label>
+                    <input type="file" id="ann-img" accept="image/*" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-4">
+                    <button onclick="postAnnouncement()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Post</button>
+                </div>
+
+                <!-- Add Event/Gallery -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col">
+                    <h3 class="text-lg font-semibold text-gold-400 mb-4"><i class="fas fa-camera mr-2"></i>Add to Gallery</h3>
+                    <input type="text" id="gal-title" placeholder="Event Title / Description" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none">
+                    <label class="block text-xs text-gray-400 mb-1">Event Photo (Max 750KB)</label>
+                    <input type="file" id="gal-img" accept="image/*" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-4">
+                    <button onclick="postGallery()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Upload Photo</button>
+                </div>
+
+                <!-- Upload PDF -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col">
+                    <h3 class="text-lg font-semibold text-gold-400 mb-4"><i class="fas fa-file-pdf mr-2"></i>Upload Material</h3>
+                    <input type="text" id="pdf-title" placeholder="Material Title" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none">
+                    <label class="block text-xs text-gray-400 mb-1">PDF File (Max 750KB)</label>
+                    <input type="file" id="pdf-file" accept=".pdf" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-4">
+                    <button onclick="uploadPDF()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Upload PDF</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative bg-gray-900 text-white">
+        <div class="absolute inset-0 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="Church Interior" class="w-full h-full object-cover opacity-40">
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent"></div>
+        </div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-48 flex flex-col items-center text-center">
+            <span class="text-gold-400 font-bold tracking-widest uppercase text-sm mb-4">Welcome to Our Church Family</span>
+            <h1 class="text-4xl md:text-6xl font-serif font-bold mb-6 leading-tight">
+                Pentecostals of Gutad
+            </h1>
+            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mb-10">
+                Experiencing the Word of God, fellowship, and spiritual growth in the heart of Pampanga.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <a href="#announcements" class="bg-gold-500 hover:bg-gold-600 text-white font-bold py-3 px-8 rounded-full transition-colors shadow-lg shadow-gold-500/30">Latest Updates</a>
+                <a href="#resources" class="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white font-bold py-3 px-8 rounded-full transition-colors">Study Materials</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow">
+        <!-- Announcements Section -->
+        <section id="announcements" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Church Announcements</h2>
+                    <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
+                </div>
+                
+                <div id="announcements-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <div id="no-announcements" class="text-center text-gray-500 py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                    <i class="fas fa-circle-notch fa-spin text-4xl mb-3 text-gold-500"></i>
+                    <p>Loading announcements...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Events & Gallery Section -->
+        <section id="events" class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Past Events & Gallery</h2>
+                    <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
+                </div>
+
+                <div id="gallery-grid" class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <div id="no-gallery" class="text-center text-gray-500 py-10 bg-white rounded-xl border border-dashed border-gray-300">
+                    <i class="fas fa-circle-notch fa-spin text-4xl mb-3 text-gold-500"></i>
+                    <p>Loading gallery...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources Section -->
+        <section id="resources" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Word of God Materials</h2>
+                    <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
+                </div>
+
+                <div class="max-w-4xl mx-auto">
+                    <div id="resources-list" class="space-y-4">
+                        <!-- Populated by JS -->
+                    </div>
+                    
+                    <div id="no-resources" class="text-center text-gray-500 py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                        <i class="fas fa-circle-notch fa-spin text-4xl mb-3 text-gold-500"></i>
+                        <p>Loading materials...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-12 border-t-4 border-gold-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <img id="footer-logo" src="https://ui-avatars.com/api/?name=PG&background=d59424&color=fff&rounded=true" alt="Church Logo" class="h-10 w-10 object-cover rounded-full">
+                    <span class="font-serif font-bold text-xl text-white">Pentecostals of Gutad</span>
+                </div>
+                <p class="text-sm text-gray-400 mb-4">A place of worship, learning the Word of God, and growing together as a spiritual family.</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-4 border-b border-gray-700 pb-2 inline-block">Location</h3>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-map-marker-alt text-gold-500 mt-1"></i>
+                        <span>Brgy. Gutad, Floridablanca<br>Pampanga, Philippines 2006</span>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-4 border-b border-gray-700 pb-2 inline-block">Quick Links</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#home" class="hover:text-gold-500 transition-colors">Home</a></li>
+                    <li><a href="#announcements" class="hover:text-gold-500 transition-colors">Announcements</a></li>
+                    <li><a href="#events" class="hover:text-gold-500 transition-colors">Events & Gallery</a></li>
+                    <li><a href="#resources" class="hover:text-gold-500 transition-colors">Resources</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
+            &copy; <span id="current-year"></span> Pentecostals of Gutad. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Firebase SDK & Application Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, doc, setDoc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmJa7mPSNlkjxPz3MP_SXFNUy1XkmUBXQ",
+            authDomain: "pentecostalsofgutad.firebaseapp.com",
+            projectId: "pentecostalsofgutad",
+            storageBucket: "pentecostalsofgutad.firebasestorage.app",
+            messagingSenderId: "331345275598",
+            appId: "1:331345275598:web:9dfc002896182eb1f6be9f",
+            measurementId: "G-EPK9Q37GNJ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'pentecostals-gutad-app';
+
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        let state = {
+            isAdmin: false,
+            announcements: [],
+            gallery: [],
+            resources: []
+        };
+
+        // UI Utils
+        window.showToast = function(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colors = type === 'success' ? 'bg-green-600' : (type === 'error' ? 'bg-red-600' : 'bg-gold-600');
+            const icon = type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle');
+
+            toast.className = `flex items-center gap-3 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-y-10 opacity-0 ${colors}`;
+            toast.innerHTML = `<i class="fas ${icon}"></i> <span class="font-medium">${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 10);
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        window.toggleMobileMenu = function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        // Base64 converter with 750KB limit (to prevent breaking Firestore 1MB doc limit)
+        window.getBase64 = function(file) {
+            return new Promise((resolve, reject) => {
+                if (file.size > 750000) { 
+                    reject(new Error('File is too large. Please select a file smaller than 750KB.'));
+                    return;
+                }
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Authentication Setup
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.warn("Anonymous login disabled in Firebase. Proceeding as public viewer.", error.message);
+            }
+        };
+
+        let listenersInitialized = false;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.email === 'gutadpentecostals@gmail.com') {
+                state.isAdmin = true;
+            } else {
+                state.isAdmin = false;
+            }
+            updateAuthUI();
+
+            if (!listenersInitialized) {
+                setupListeners();
+                listenersInitialized = true;
+            }
+        });
+
+        // Initialize immediately
+        initAuth();
+
+        window.handleLogin = async function() {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                if (result.user.email !== 'gutadpentecostals@gmail.com') {
+                    await signOut(auth);
+                    window.showToast('Access Denied. You must use gutadpentecostals@gmail.com', 'error');
+                } else {
+                    window.showToast('Successfully logged in as Admin!');
+                }
+            } catch (error) {
+                window.showToast('Login failed: ' + error.message, 'error');
+            }
+        }
+
+        window.handleLogout = async function() {
+            await signOut(auth);
+            window.showToast('Logged out successfully.', 'info');
+            await initAuth(); // Attempt to restore public viewing state
+        }
+
+        function updateAuthUI() {
+            const loginBtns = [document.getElementById('login-btn'), document.getElementById('mobile-login-btn')];
+            const logoutBtns = [document.getElementById('logout-btn'), document.getElementById('mobile-logout-btn')];
+            const adminDashboard = document.getElementById('admin-dashboard');
+
+            if (state.isAdmin) {
+                loginBtns.forEach(btn => btn.classList.add('hidden'));
+                logoutBtns.forEach(btn => btn.classList.remove('hidden'));
+                adminDashboard.classList.remove('hidden');
+            } else {
+                loginBtns.forEach(btn => btn.classList.remove('hidden'));
+                logoutBtns.forEach(btn => btn.classList.add('hidden'));
+                adminDashboard.classList.add('hidden');
+            }
+        }
+
+        // Admin Database Actions
+        window.updateLogo = async function() {
+            if (!state.isAdmin) return;
+            const fileInput = document.getElementById('logo-upload');
+            if (fileInput.files.length === 0) return window.showToast('Select an image first.', 'error');
+            
+            try {
+                const base64 = await window.getBase64(fileInput.files[0]);
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'church_info'), { logoUrl: base64, timestamp: Date.now() });
+                fileInput.value = '';
+                window.showToast('Church logo updated!');
+            } catch (e) {
+                window.showToast(e.message || 'Failed to update logo.', 'error');
+            }
+        }
+
+        window.postAnnouncement = async function() {
+            if (!state.isAdmin) return;
+            const title = document.getElementById('ann-title').value.trim();
+            const content = document.getElementById('ann-content').value.trim();
+            const fileInput = document.getElementById('ann-img');
+
+            if (!title || !content || fileInput.files.length === 0) {
+                return window.showToast('Fill all fields and select a thumbnail.', 'error');
+            }
+
+            try {
+                const image = await window.getBase64(fileInput.files[0]);
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'announcements'), {
+                    title, content, image,
+                    date: new Date().toLocaleDateString(),
+                    timestamp: Date.now()
+                });
+                
+                document.getElementById('ann-title').value = '';
+                document.getElementById('ann-content').value = '';
+                fileInput.value = '';
+                window.showToast('Announcement posted!');
+            } catch (e) {
+                window.showToast(e.message || 'Error saving announcement.', 'error');
+            }
+        }
+
+        window.postGallery = async function() {
+            if (!state.isAdmin) return;
+            const title = document.getElementById('gal-title').value.trim();
+            const fileInput = document.getElementById('gal-img');
+
+            if (!title || fileInput.files.length === 0) return window.showToast('Provide a description and select a photo.', 'error');
+
+            try {
+                const image = await window.getBase64(fileInput.files[0]);
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'gallery'), { title, image, timestamp: Date.now() });
+                
+                document.getElementById('gal-title').value = '';
+                fileInput.value = '';
+                window.showToast('Photo added to gallery!');
+            } catch (e) {
+                window.showToast(e.message || 'Error uploading photo.', 'error');
+            }
+        }
+
+        window.uploadPDF = async function() {
+            if (!state.isAdmin) return;
+            const title = document.getElementById('pdf-title').value.trim();
+            const fileInput = document.getElementById('pdf-file');
+
+            if (!title || fileInput.files.length === 0) return window.showToast('Provide a title and select a PDF.', 'error');
+
+            const file = fileInput.files[0];
+            const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+
+            try {
+                const fileDataUrl = await window.getBase64(file);
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'resources'), { title, file: fileDataUrl, size: `${sizeInMB} MB`, timestamp: Date.now() });
+
+                document.getElementById('pdf-title').value = '';
+                fileInput.value = '';
+                window.showToast('Material uploaded successfully!');
+            } catch (e) {
+                window.showToast(e.message || 'Error processing PDF.', 'error');
+            }
+        }
+
+        // Real-Time Listeners (Syncs Data Live)
+        function setupListeners() {
+            const handlePermError = (error, context) => {
+                console.error(`Permission Error (${context}):`, error);
+                const el = document.getElementById(`no-${context}`);
+                if (el) {
+                    el.classList.remove('hidden');
+                    if (error.code === 'permission-denied') {
+                        el.innerHTML = `
+                            <i class="fas fa-lock text-4xl mb-3 text-red-500"></i>
+                            <p class="text-red-600 font-bold">Database Locked</p>
+                            <p class="text-sm mt-2 text-gray-600">Please go to Firebase Console -> Firestore Database -> Rules, and set "allow read: if true;"</p>
+                        `;
+                    }
+                }
+            };
+
+            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'church_info'), (docSnapshot) => {
+                if (docSnapshot.exists() && docSnapshot.data().logoUrl) {
+                    document.getElementById('nav-logo').src = docSnapshot.data().logoUrl;
+                    document.getElementById('footer-logo').src = docSnapshot.data().logoUrl;
+                }
+            }, (err) => handlePermError(err, 'settings'));
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'announcements'), (snapshot) => {
+                state.announcements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                state.announcements.sort((a, b) => b.timestamp - a.timestamp); // Sort newest first in memory
+                renderAnnouncements();
+            }, (err) => handlePermError(err, 'announcements'));
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'gallery'), (snapshot) => {
+                state.gallery = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                state.gallery.sort((a, b) => b.timestamp - a.timestamp);
+                renderGallery();
+            }, (err) => handlePermError(err, 'gallery'));
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'resources'), (snapshot) => {
+                state.resources = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                state.resources.sort((a, b) => b.timestamp - a.timestamp);
+                renderResources();
+            }, (err) => handlePermError(err, 'resources'));
+        }
+
+        // Render Functions
+        function renderAnnouncements() {
+            const grid = document.getElementById('announcements-grid');
+            const emptyState = document.getElementById('no-announcements');
+            grid.innerHTML = '';
+
+            if (state.announcements.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.innerHTML = `<i class="fas fa-inbox text-4xl mb-3 text-gray-300"></i><p>No announcements posted yet.</p>`;
+                return;
+            }
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            state.announcements.forEach(ann => {
+                grid.innerHTML += `
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
+                        <div class="h-48 overflow-hidden relative group">
+                            <img src="${ann.image}" alt="${ann.title}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <span class="text-xs font-semibold text-gold-600 mb-2 uppercase tracking-wider">${ann.date}</span>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3">${ann.title}</h3>
+                            <p class="text-gray-600 text-sm flex-grow line-clamp-3">${ann.content}</p>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            const emptyState = document.getElementById('no-gallery');
+            grid.innerHTML = '';
+
+            if (state.gallery.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.innerHTML = `<i class="fas fa-images text-4xl mb-3 text-gray-300"></i><p>No gallery images uploaded yet.</p>`;
+                return;
+            }
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            state.gallery.forEach(item => {
+                grid.innerHTML += `
+                    <div class="relative group break-inside-avoid rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+                        <img src="${item.image}" alt="${item.title}" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                            <p class="text-white font-medium">${item.title}</p>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function renderResources() {
+            const list = document.getElementById('resources-list');
+            const emptyState = document.getElementById('no-resources');
+            list.innerHTML = '';
+
+            if (state.resources.length === 0) {
+                list.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.innerHTML = `<i class="fas fa-file-pdf text-4xl mb-3 text-gray-300"></i><p>No materials available for download yet.</p>`;
+                return;
+            }
+            list.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            state.resources.forEach(res => {
+                list.innerHTML += `
+                    <div class="flex items-center justify-between p-5 bg-gray-50 hover:bg-gold-50 border border-gray-100 rounded-xl transition-colors group">
+                        <div class="flex items-center gap-4">
+                            <div class="h-12 w-12 bg-white rounded-full shadow-sm flex items-center justify-center text-red-500 group-hover:text-gold-600 group-hover:scale-110 transition-all">
+                                <i class="fas fa-file-pdf text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">${res.title}</h4>
+                                <p class="text-xs text-gray-500 mt-1">PDF Document • ${res.size}</p>
+                            </div>
+                        </div>
+                        <a href="${res.file}" download="${res.title}.pdf" class="bg-white border border-gray-200 hover:border-gold-500 hover:text-gold-600 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
+                            <i class="fas fa-download"></i> <span class="hidden sm:inline">Download</span>
+                        </a>
+                    </div>`;
+            });
+        }
+    </script>
+</body>
+</html>
 
