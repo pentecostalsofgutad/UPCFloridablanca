@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pentecostals of Gutad</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -43,6 +44,23 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
+    <!-- Post Modal -->
+    <div id="post-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeModal(event)">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform transition-all scale-95 opacity-0" id="modal-content">
+            <div class="relative">
+                <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10">
+                    <i class="fas fa-times text-xl w-6 h-6 flex items-center justify-center"></i>
+                </button>
+                <img id="modal-image" src="" alt="Post Image" class="w-full h-64 md:h-96 object-cover rounded-t-2xl">
+            </div>
+            <div class="p-8">
+                <span id="modal-date" class="text-sm font-semibold text-gold-600 uppercase tracking-wider block mb-2"></span>
+                <h2 id="modal-title" class="text-3xl font-serif font-bold text-gray-900 mb-6"></h2>
+                <p id="modal-body" class="text-gray-700 leading-relaxed whitespace-pre-wrap text-lg"></p>
+            </div>
+        </div>
+    </div>
+
     <!-- Navbar -->
     <nav class="bg-white shadow-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,7 +78,7 @@
                     <a href="#events" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Events & Gallery</a>
                     <a href="#resources" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Resources</a>
                     <button id="login-btn" onclick="handleLogin()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full font-medium transition-colors">
-                        <i class="fab fa-google text-red-500"></i> Admin Access
+                        <i class="fab fa-google text-red-500"></i> Login
                     </button>
                     <button id="logout-btn" onclick="handleLogout()" class="hidden flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-full font-medium transition-colors">
                         <i class="fas fa-sign-out-alt"></i> Logout
@@ -80,7 +98,7 @@
             <a href="#announcements" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Announcements</a>
             <a href="#events" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Events & Gallery</a>
             <a href="#resources" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Resources</a>
-            <button id="mobile-login-btn" onclick="handleLogin(); toggleMobileMenu();" class="w-full text-left mt-4 px-3 py-2 text-base font-medium text-gold-600 bg-gold-50 rounded-md"><i class="fab fa-google text-red-500 mr-2"></i>Admin Login</button>
+            <button id="mobile-login-btn" onclick="handleLogin(); toggleMobileMenu();" class="w-full text-left mt-4 px-3 py-2 text-base font-medium text-gold-600 bg-gold-50 rounded-md"><i class="fab fa-google text-red-500 mr-2"></i>Login</button>
             <button id="mobile-logout-btn" onclick="handleLogout(); toggleMobileMenu();" class="hidden w-full text-left mt-4 px-3 py-2 text-base font-medium text-red-600 bg-red-50 rounded-md">Logout</button>
         </div>
     </nav>
@@ -315,18 +333,40 @@
             document.getElementById('mobile-menu').classList.toggle('hidden');
         }
 
-        // Base64 converter with optional limit (default 750KB to prevent breaking Firestore 1MB doc limit)
-        window.getBase64 = function(file, maxSize = 750000) {
-            return new Promise((resolve, reject) => {
-                if (maxSize !== null && file.size > maxSize) { 
-                    reject(new Error(`File is too large. Please select a file smaller than ${(maxSize/1000).toFixed(0)}KB.`));
-                    return;
+        // Base64 converter with compression and optional limit
+        window.getBase64 = async function(file, maxSize = 750000) {
+            try {
+                // Compress image if it is an image file
+                if (file.type.startsWith('image/') && window.imageCompression) {
+                    const options = {
+                        maxSizeMB: 0.7, // Target smaller than 750KB
+                        maxWidthOrHeight: 1920,
+                        useWebWorker: true
+                    };
+                    try {
+                        const compressedFile = await window.imageCompression(file, options);
+                        // Use the compressed file if it's smaller, otherwise use original (rare, but possible for already optimized images)
+                        if (compressedFile.size < file.size) {
+                            file = compressedFile;
+                        }
+                    } catch (error) {
+                        console.warn('Image compression failed, using original file:', error);
+                    }
                 }
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
+
+                return new Promise((resolve, reject) => {
+                    if (maxSize !== null && file.size > maxSize) { 
+                        reject(new Error(`File is too large. Please select a file smaller than ${(maxSize/1000).toFixed(0)}KB.`));
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
+                });
+            } catch (error) {
+                throw error;
+            }
         }
 
         // Authentication Setup
@@ -365,8 +405,7 @@
             try {
                 const result = await signInWithPopup(auth, provider);
                 if (result.user.email !== 'gutadpentecostals@gmail.com') {
-                    await signOut(auth);
-                    window.showToast('Access Denied. You must use gutadpentecostals@gmail.com', 'error');
+                    window.showToast('Welcome! You are logged in as a guest (View Only).');
                 } else {
                     window.showToast('Successfully logged in as Admin!');
                 }
@@ -650,6 +689,58 @@
             }
         }
 
+        // Modal Functions
+        window.openModal = function(item) {
+            const modal = document.getElementById('post-modal');
+            const content = document.getElementById('modal-content');
+            
+            document.getElementById('modal-image').src = item.image;
+            
+            const dateEl = document.getElementById('modal-date');
+            if (item.date) {
+                dateEl.textContent = item.date;
+                dateEl.classList.remove('hidden');
+            } else if (item.timestamp) {
+                dateEl.textContent = new Date(item.timestamp).toLocaleDateString();
+                dateEl.classList.remove('hidden');
+            } else {
+                dateEl.classList.add('hidden');
+            }
+
+            document.getElementById('modal-title').textContent = item.title;
+            
+            const bodyEl = document.getElementById('modal-body');
+            if (item.content) {
+                bodyEl.textContent = item.content;
+                bodyEl.classList.remove('hidden');
+            } else {
+                bodyEl.classList.add('hidden');
+            }
+            
+            modal.classList.remove('hidden');
+            // Small delay to allow display:block to apply before adding opacity/scale classes for transition
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        window.closeModal = function(event) {
+            if (event && event.target.id !== 'post-modal' && !event.target.closest('button')) return;
+            
+            const modal = document.getElementById('post-modal');
+            const content = document.getElementById('modal-content');
+            
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
         // Render Functions
         function renderAnnouncements() {
             const grid = document.getElementById('announcements-grid');
@@ -666,10 +757,13 @@
             emptyState.classList.add('hidden');
 
             state.announcements.forEach(ann => {
+                // Escape quotes for the onclick handler
+                const safeAnn = JSON.stringify(ann).replace(/"/g, '&quot;');
+                
                 let adminControls = '';
                 if (state.isAdmin) {
                     adminControls = `
-                        <div class="absolute top-2 right-2 flex gap-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <div class="absolute top-2 right-2 flex gap-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" onclick="event.stopPropagation()">
                             <button onclick="editAnnouncement('${ann.id}')" class="bg-blue-500 text-white w-8 h-8 rounded-full shadow-lg hover:bg-blue-600 transition flex items-center justify-center" title="Edit"><i class="fas fa-edit text-xs"></i></button>
                             <button onclick="deleteAnnouncement('${ann.id}')" class="bg-red-500 text-white w-8 h-8 rounded-full shadow-lg hover:bg-red-600 transition flex items-center justify-center" title="Delete"><i class="fas fa-trash text-xs"></i></button>
                         </div>
@@ -677,15 +771,18 @@
                 }
 
                 grid.innerHTML += `
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col relative group">
+                    <div onclick="openModal(${safeAnn})" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col relative group cursor-pointer transform hover:-translate-y-1">
                         ${adminControls}
                         <div class="h-48 overflow-hidden relative">
                             <img src="${ann.image}" alt="${ann.title}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
                         </div>
                         <div class="p-6 flex-grow flex flex-col">
                             <span class="text-xs font-semibold text-gold-600 mb-2 uppercase tracking-wider">${ann.date}</span>
-                            <h3 class="text-xl font-bold text-gray-900 mb-3">${ann.title}</h3>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">${ann.title}</h3>
                             <p class="text-gray-600 text-sm flex-grow line-clamp-3">${ann.content}</p>
+                            <div class="mt-4 text-gold-600 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                                Read More <i class="fas fa-arrow-right"></i>
+                            </div>
                         </div>
                     </div>`;
             });
@@ -706,8 +803,9 @@
             emptyState.classList.add('hidden');
 
             state.gallery.forEach(item => {
+                const safeItem = JSON.stringify(item).replace(/"/g, '&quot;');
                 grid.innerHTML += `
-                    <div class="relative group break-inside-avoid rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+                    <div onclick="openModal(${safeItem})" class="relative group break-inside-avoid rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer">
                         <img src="${item.image}" alt="${item.title}" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                             <p class="text-white font-medium">${item.title}</p>
