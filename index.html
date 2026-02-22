@@ -110,7 +110,9 @@
                     <input type="text" id="ann-title" placeholder="Title" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none">
                     <textarea id="ann-content" placeholder="Content details..." rows="2" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none"></textarea>
                     <label class="block text-xs text-gray-400 mb-1">Thumbnail Image (Max 750KB)</label>
-                    <input type="file" id="ann-img" accept="image/*" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-4">
+                    <input type="file" id="ann-img" accept="image/*" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-2">
+                    <div class="text-center text-xs text-gray-500 mb-2">- OR -</div>
+                    <input type="text" id="ann-url" placeholder="Paste Google Drive / Image Link" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none text-sm">
                     <button onclick="postAnnouncement()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Post</button>
                 </div>
 
@@ -119,7 +121,9 @@
                     <h3 class="text-lg font-semibold text-gold-400 mb-4"><i class="fas fa-camera mr-2"></i>Add to Gallery</h3>
                     <input type="text" id="gal-title" placeholder="Event Title / Description" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none">
                     <label class="block text-xs text-gray-400 mb-1">Event Photo (Max 750KB)</label>
-                    <input type="file" id="gal-img" accept="image/*" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-4">
+                    <input type="file" id="gal-img" accept="image/*" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-2">
+                    <div class="text-center text-xs text-gray-500 mb-2">- OR -</div>
+                    <input type="text" id="gal-url" placeholder="Paste Google Drive / Image Link" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none text-sm">
                     <button onclick="postGallery()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Upload Photo</button>
                 </div>
 
@@ -128,7 +132,9 @@
                     <h3 class="text-lg font-semibold text-gold-400 mb-4"><i class="fas fa-file-pdf mr-2"></i>Upload Material</h3>
                     <input type="text" id="pdf-title" placeholder="Material Title" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none">
                     <label class="block text-xs text-gray-400 mb-1">PDF File (Max 750KB)</label>
-                    <input type="file" id="pdf-file" accept=".pdf" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-4">
+                    <input type="file" id="pdf-file" accept=".pdf" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-2">
+                    <div class="text-center text-xs text-gray-500 mb-2">- OR -</div>
+                    <input type="text" id="pdf-url" placeholder="Paste Google Drive / File Link" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none text-sm">
                     <button onclick="uploadPDF()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Upload PDF</button>
                 </div>
             </div>
@@ -308,11 +314,11 @@
             document.getElementById('mobile-menu').classList.toggle('hidden');
         }
 
-        // Base64 converter with 750KB limit (to prevent breaking Firestore 1MB doc limit)
-        window.getBase64 = function(file) {
+        // Base64 converter with optional limit (default 750KB to prevent breaking Firestore 1MB doc limit)
+        window.getBase64 = function(file, maxSize = 750000) {
             return new Promise((resolve, reject) => {
-                if (file.size > 750000) { 
-                    reject(new Error('File is too large. Please select a file smaller than 750KB.'));
+                if (maxSize !== null && file.size > maxSize) { 
+                    reject(new Error(`File is too large. Please select a file smaller than ${(maxSize/1000).toFixed(0)}KB.`));
                     return;
                 }
                 const reader = new FileReader();
@@ -390,6 +396,21 @@
             }
         }
 
+        // Helper to convert Google Drive sharing links to direct view links for images
+        window.processDriveLink = function(url) {
+            if (!url) return '';
+            // Check if it's a Google Drive link
+            if (url.includes('drive.google.com') || url.includes('docs.google.com')) {
+                // Try to extract the ID
+                const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (idMatch && idMatch[1]) {
+                    // Return direct view URL for images
+                    return `https://drive.google.com/uc?export=view&id=${idMatch[1]}`;
+                }
+            }
+            return url;
+        }
+
         // Admin Database Actions
         window.updateLogo = async function() {
             if (!state.isAdmin) return;
@@ -397,7 +418,8 @@
             if (fileInput.files.length === 0) return window.showToast('Select an image first.', 'error');
             
             try {
-                const base64 = await window.getBase64(fileInput.files[0]);
+                // Pass null to bypass size limit for logo
+                const base64 = await window.getBase64(fileInput.files[0], null);
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'church_info'), { logoUrl: base64, timestamp: Date.now() });
                 fileInput.value = '';
                 window.showToast('Church logo updated!');
@@ -411,13 +433,15 @@
             const title = document.getElementById('ann-title').value.trim();
             const content = document.getElementById('ann-content').value.trim();
             const fileInput = document.getElementById('ann-img');
+            const urlInput = document.getElementById('ann-url').value.trim();
 
-            if (!title || !content || fileInput.files.length === 0) {
-                return window.showToast('Fill all fields and select a thumbnail.', 'error');
+            if (!title || !content || (fileInput.files.length === 0 && !urlInput)) {
+                return window.showToast('Fill title, content, and provide an image (File or URL).', 'error');
             }
 
             try {
-                const image = await window.getBase64(fileInput.files[0]);
+                let image = urlInput ? window.processDriveLink(urlInput) : await window.getBase64(fileInput.files[0]);
+                
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'announcements'), {
                     title, content, image,
                     date: new Date().toLocaleDateString(),
@@ -426,6 +450,7 @@
                 
                 document.getElementById('ann-title').value = '';
                 document.getElementById('ann-content').value = '';
+                document.getElementById('ann-url').value = '';
                 fileInput.value = '';
                 window.showToast('Announcement posted!');
             } catch (e) {
@@ -437,14 +462,17 @@
             if (!state.isAdmin) return;
             const title = document.getElementById('gal-title').value.trim();
             const fileInput = document.getElementById('gal-img');
+            const urlInput = document.getElementById('gal-url').value.trim();
 
-            if (!title || fileInput.files.length === 0) return window.showToast('Provide a description and select a photo.', 'error');
+            if (!title || (fileInput.files.length === 0 && !urlInput)) return window.showToast('Provide a description and an image (File or URL).', 'error');
 
             try {
-                const image = await window.getBase64(fileInput.files[0]);
+                let image = urlInput ? window.processDriveLink(urlInput) : await window.getBase64(fileInput.files[0]);
+
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'gallery'), { title, image, timestamp: Date.now() });
                 
                 document.getElementById('gal-title').value = '';
+                document.getElementById('gal-url').value = '';
                 fileInput.value = '';
                 window.showToast('Photo added to gallery!');
             } catch (e) {
@@ -456,21 +484,30 @@
             if (!state.isAdmin) return;
             const title = document.getElementById('pdf-title').value.trim();
             const fileInput = document.getElementById('pdf-file');
+            const urlInput = document.getElementById('pdf-url').value.trim();
 
-            if (!title || fileInput.files.length === 0) return window.showToast('Provide a title and select a PDF.', 'error');
-
-            const file = fileInput.files[0];
-            const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+            if (!title || (fileInput.files.length === 0 && !urlInput)) return window.showToast('Provide a title and a file (PDF or Link).', 'error');
 
             try {
-                const fileDataUrl = await window.getBase64(file);
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'resources'), { title, file: fileDataUrl, size: `${sizeInMB} MB`, timestamp: Date.now() });
+                let fileDataUrl, sizeLabel;
+
+                if (urlInput) {
+                    fileDataUrl = urlInput; // Keep original link for PDFs/Docs
+                    sizeLabel = 'External Link';
+                } else {
+                    const file = fileInput.files[0];
+                    fileDataUrl = await window.getBase64(file);
+                    sizeLabel = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+                }
+
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'resources'), { title, file: fileDataUrl, size: sizeLabel, timestamp: Date.now() });
 
                 document.getElementById('pdf-title').value = '';
+                document.getElementById('pdf-url').value = '';
                 fileInput.value = '';
-                window.showToast('Material uploaded successfully!');
+                window.showToast('Material added successfully!');
             } catch (e) {
-                window.showToast(e.message || 'Error processing PDF.', 'error');
+                window.showToast(e.message || 'Error processing material.', 'error');
             }
         }
 
@@ -587,6 +624,11 @@
             emptyState.classList.add('hidden');
 
             state.resources.forEach(res => {
+                const isDataUrl = res.file.startsWith('data:');
+                const actionText = isDataUrl ? 'Download' : 'Open Link';
+                const actionIcon = isDataUrl ? 'fa-download' : 'fa-external-link-alt';
+                const downloadAttr = isDataUrl ? `download="${res.title}.pdf"` : 'target="_blank"';
+
                 list.innerHTML += `
                     <div class="flex items-center justify-between p-5 bg-gray-50 hover:bg-gold-50 border border-gray-100 rounded-xl transition-colors group">
                         <div class="flex items-center gap-4">
@@ -598,8 +640,8 @@
                                 <p class="text-xs text-gray-500 mt-1">PDF Document • ${res.size}</p>
                             </div>
                         </div>
-                        <a href="${res.file}" download="${res.title}.pdf" class="bg-white border border-gray-200 hover:border-gold-500 hover:text-gold-600 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
-                            <i class="fas fa-download"></i> <span class="hidden sm:inline">Download</span>
+                        <a href="${res.file}" ${downloadAttr} class="bg-white border border-gray-200 hover:border-gold-500 hover:text-gold-600 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
+                            <i class="fas ${actionIcon}"></i> <span class="hidden sm:inline">${actionText}</span>
                         </a>
                     </div>`;
             });
@@ -607,4 +649,3 @@
     </script>
 </body>
 </html>
-
