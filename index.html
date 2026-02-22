@@ -37,6 +37,36 @@
         html { scroll-behavior: smooth; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Reveal Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Staggered delays */
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 40px, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
@@ -61,6 +91,28 @@
         </div>
     </div>
 
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeLoginModal(event)">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl transform transition-all scale-95 opacity-0 p-8 text-center" id="login-modal-content">
+            <div class="mb-6">
+                <div class="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-shield text-3xl text-gold-600"></i>
+                </div>
+                <h2 class="text-2xl font-serif font-bold text-gray-900">Admin Access</h2>
+                <p class="text-gray-600 mt-2">Please sign in to manage website content.</p>
+            </div>
+            
+            <button onclick="handleLogin()" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-xl transition-all shadow-sm hover:shadow-md group">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-6 h-6">
+                <span class="group-hover:text-gray-900">Sign in with Google</span>
+            </button>
+            
+            <button onclick="closeLoginModal()" class="mt-6 text-sm text-gray-400 hover:text-gray-600 transition-colors">
+                Cancel
+            </button>
+        </div>
+    </div>
+
     <!-- Navbar -->
     <nav class="bg-white shadow-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -78,12 +130,6 @@
                     <a href="#events" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Events & Gallery</a>
                     <a href="#resources" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Resources</a>
                     <a href="#location" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Location</a>
-                    <button id="login-btn" onclick="handleLogin()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full font-medium transition-colors">
-                        <i class="fab fa-google text-red-500"></i> Login
-                    </button>
-                    <button id="logout-btn" onclick="handleLogout()" class="hidden flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-full font-medium transition-colors">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
                 </div>
                 <!-- Mobile menu button -->
                 <div class="md:hidden flex items-center">
@@ -100,8 +146,6 @@
             <a href="#events" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Events & Gallery</a>
             <a href="#resources" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Resources</a>
             <a href="#location" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Location</a>
-            <button id="mobile-login-btn" onclick="handleLogin(); toggleMobileMenu();" class="w-full text-left mt-4 px-3 py-2 text-base font-medium text-gold-600 bg-gold-50 rounded-md"><i class="fab fa-google text-red-500 mr-2"></i>Login</button>
-            <button id="mobile-logout-btn" onclick="handleLogout(); toggleMobileMenu();" class="hidden w-full text-left mt-4 px-3 py-2 text-base font-medium text-red-600 bg-red-50 rounded-md">Logout</button>
         </div>
     </nav>
 
@@ -162,23 +206,24 @@
     </section>
 
     <!-- Hero Section -->
-    <section id="home" class="relative bg-gray-900 text-white">
-        <div class="absolute inset-0 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="Church Interior" class="w-full h-full object-cover opacity-40">
+    <section id="home" class="relative bg-gray-900 text-white overflow-hidden min-h-screen flex items-center justify-center">
+        <!-- Parallax Background -->
+        <div class="absolute inset-0 w-full h-full z-0">
+            <img id="hero-bg" src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="Church Interior" class="absolute inset-0 w-full h-[120%] object-cover opacity-40 transition-transform duration-75 ease-linear origin-top">
             <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent"></div>
         </div>
         
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-48 flex flex-col items-center text-center">
-            <span class="text-gold-400 font-bold tracking-widest uppercase text-sm mb-4">Welcome to Our Church Family</span>
-            <h1 class="text-4xl md:text-6xl font-serif font-bold mb-6 leading-tight">
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center reveal active">
+            <span class="text-gold-400 font-bold tracking-widest uppercase text-sm mb-4 animate-fade-in-up">Welcome to Our Church Family</span>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-serif font-bold mb-6 leading-tight drop-shadow-lg">
                 Pentecostals of Gutad
             </h1>
-            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mb-10">
+            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mb-10 drop-shadow-md">
                 Experiencing the Word of God, fellowship, and spiritual growth in the heart of Pampanga.
             </p>
             <div class="flex flex-col sm:flex-row gap-4">
-                <a href="#announcements" class="bg-gold-500 hover:bg-gold-600 text-white font-bold py-3 px-8 rounded-full transition-colors shadow-lg shadow-gold-500/30">Latest Updates</a>
-                <a href="#resources" class="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white font-bold py-3 px-8 rounded-full transition-colors">Study Materials</a>
+                <a href="#announcements" class="bg-gold-500 hover:bg-gold-600 text-white font-bold py-3 px-8 rounded-full transition-all transform hover:scale-105 shadow-lg shadow-gold-500/30">Latest Updates</a>
+                <a href="#resources" class="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white font-bold py-3 px-8 rounded-full transition-all transform hover:scale-105">Study Materials</a>
             </div>
         </div>
     </section>
@@ -188,16 +233,16 @@
         <!-- Announcements Section -->
         <section id="announcements" class="py-20 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
+                <div class="text-center mb-16 reveal">
                     <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Church Announcements</h2>
                     <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
                 </div>
                 
-                <div id="announcements-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div id="announcements-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 reveal delay-100">
                     <!-- Populated by JS -->
                 </div>
                 
-                <div id="no-announcements" class="text-center text-gray-500 py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                <div id="no-announcements" class="text-center text-gray-500 py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300 reveal">
                     <i class="fas fa-circle-notch fa-spin text-4xl mb-3 text-gold-500"></i>
                     <p>Loading announcements...</p>
                 </div>
@@ -207,16 +252,16 @@
         <!-- Events & Gallery Section -->
         <section id="events" class="py-20 bg-gray-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
+                <div class="text-center mb-16 reveal">
                     <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Past Events & Gallery</h2>
                     <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
                 </div>
 
-                <div id="gallery-grid" class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+                <div id="gallery-grid" class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 reveal delay-100">
                     <!-- Populated by JS -->
                 </div>
                 
-                <div id="no-gallery" class="text-center text-gray-500 py-10 bg-white rounded-xl border border-dashed border-gray-300">
+                <div id="no-gallery" class="text-center text-gray-500 py-10 bg-white rounded-xl border border-dashed border-gray-300 reveal">
                     <i class="fas fa-circle-notch fa-spin text-4xl mb-3 text-gold-500"></i>
                     <p>Loading gallery...</p>
                 </div>
@@ -226,12 +271,12 @@
         <!-- Resources Section -->
         <section id="resources" class="py-20 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
+                <div class="text-center mb-16 reveal">
                     <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Word of God Materials</h2>
                     <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
                 </div>
 
-                <div class="max-w-4xl mx-auto">
+                <div class="max-w-4xl mx-auto reveal delay-100">
                     <div id="resources-list" class="space-y-4">
                         <!-- Populated by JS -->
                     </div>
@@ -248,13 +293,13 @@
     <!-- Location Section -->
     <section id="location" class="py-20 bg-gray-50 border-t border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
+            <div class="text-center mb-16 reveal">
                 <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Visit Us</h2>
                 <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
                 <p class="mt-4 text-gray-600">Join us for worship and fellowship.</p>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col md:flex-row">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col md:flex-row reveal delay-100">
                 <div class="w-full md:w-1/2 h-96 bg-gray-200 relative">
                     <iframe 
                         width="100%" 
@@ -281,6 +326,10 @@
                             <i class="fas fa-envelope text-gold-500 text-xl"></i>
                             <span>gutadpentecostals@gmail.com</span>
                         </p>
+                        <p class="flex items-center gap-3">
+                            <i class="fab fa-facebook text-gold-500 text-xl"></i>
+                            <a href="https://web.facebook.com/PentecostalsofGutad" target="_blank" class="hover:text-gold-600 transition-colors">Pentecostals of Gutad</a>
+                        </p>
                     </div>
                     <a href="https://maps.app.goo.gl/2TmhtW2ytbQA9iHq8" target="_blank" class="inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-600 text-white font-bold py-3 px-8 rounded-full transition-colors shadow-lg shadow-gold-500/30 w-full sm:w-auto">
                         <i class="fas fa-directions"></i> Get Directions
@@ -299,6 +348,14 @@
                     <span class="font-serif font-bold text-xl text-white">Pentecostals of Gutad</span>
                 </div>
                 <p class="text-sm text-gray-400 mb-4">A place of worship, learning the Word of God, and growing together as a spiritual family.</p>
+                <div class="flex gap-4 mt-4">
+                    <a href="https://web.facebook.com/PentecostalsofGutad" target="_blank" class="text-gray-400 hover:text-gold-500 transition-colors text-xl" title="Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="mailto:gutadpentecostals@gmail.com" class="text-gray-400 hover:text-gold-500 transition-colors text-xl" title="Email">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </div>
             </div>
             <div>
                 <h3 class="text-lg font-semibold text-white mb-4 border-b border-gray-700 pb-2 inline-block">Location</h3>
@@ -321,6 +378,10 @@
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
             &copy; <span id="current-year"></span> Pentecostals of Gutad. All rights reserved.
+            <div class="mt-4">
+                <button id="footer-login-btn" onclick="openLoginModal()" class="text-xs text-gray-600 hover:text-gold-500 transition-colors">Admin Login</button>
+                <button id="footer-logout-btn" onclick="handleLogout()" class="hidden text-xs text-red-500 hover:text-red-400 transition-colors">Logout</button>
+            </div>
         </div>
     </footer>
 
@@ -329,6 +390,38 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, doc, setDoc, onSnapshot, query, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Parallax and Reveal Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Parallax Effect
+            const heroBg = document.getElementById('hero-bg');
+            window.addEventListener('scroll', () => {
+                const scrollPosition = window.scrollY;
+                if (heroBg && scrollPosition < window.innerHeight) {
+                    // Move background at 50% speed of scroll
+                    heroBg.style.transform = `translateY(${scrollPosition * 0.5}px)`;
+                }
+            });
+
+            // Reveal on Scroll
+            const revealElements = document.querySelectorAll('.reveal');
+            
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                const elementVisible = 100;
+                
+                revealElements.forEach((element) => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - elementVisible) {
+                        element.classList.add('active');
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', revealOnScroll);
+            // Trigger once on load
+            revealOnScroll();
+        });
 
         // Firebase Configuration
         const firebaseConfig = {
@@ -456,9 +549,34 @@
                 } else {
                     window.showToast('Successfully logged in as Admin!');
                 }
+                window.closeLoginModal();
             } catch (error) {
                 window.showToast('Login failed: ' + error.message, 'error');
             }
+        }
+
+        window.openLoginModal = function() {
+            const modal = document.getElementById('login-modal');
+            const content = document.getElementById('login-modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        window.closeLoginModal = function(event) {
+            if (event && event.target.id !== 'login-modal' && !event.target.closest('button')) return;
+            
+            const modal = document.getElementById('login-modal');
+            const content = document.getElementById('login-modal-content');
+            
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         }
 
         window.handleLogout = async function() {
@@ -468,17 +586,17 @@
         }
 
         function updateAuthUI() {
-            const loginBtns = [document.getElementById('login-btn'), document.getElementById('mobile-login-btn')];
-            const logoutBtns = [document.getElementById('logout-btn'), document.getElementById('mobile-logout-btn')];
+            const loginBtn = document.getElementById('footer-login-btn');
+            const logoutBtn = document.getElementById('footer-logout-btn');
             const adminDashboard = document.getElementById('admin-dashboard');
 
             if (state.isAdmin) {
-                loginBtns.forEach(btn => btn.classList.add('hidden'));
-                logoutBtns.forEach(btn => btn.classList.remove('hidden'));
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
                 adminDashboard.classList.remove('hidden');
             } else {
-                loginBtns.forEach(btn => btn.classList.remove('hidden'));
-                logoutBtns.forEach(btn => btn.classList.add('hidden'));
+                loginBtn.classList.remove('hidden');
+                logoutBtn.classList.add('hidden');
                 adminDashboard.classList.add('hidden');
             }
         }
@@ -794,6 +912,9 @@
             const emptyState = document.getElementById('no-announcements');
             grid.innerHTML = '';
 
+            // Update grid class for masonry layout
+            grid.className = 'columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8';
+
             if (state.announcements.length === 0) {
                 grid.classList.add('hidden');
                 emptyState.classList.remove('hidden');
@@ -818,16 +939,17 @@
                 }
 
                 grid.innerHTML += `
-                    <div onclick="openModal(${safeAnn})" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col relative group cursor-pointer transform hover:-translate-y-1">
+                    <div onclick="openModal(${safeAnn})" class="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 break-inside-avoid overflow-hidden relative group cursor-pointer transform hover:-translate-y-2 border border-gray-100">
                         ${adminControls}
-                        <div class="h-48 overflow-hidden relative">
-                            <img src="${ann.image}" alt="${ann.title}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                        <div class="relative">
+                            <img src="${ann.image}" alt="${ann.title}" class="w-full h-auto object-contain">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
                         </div>
-                        <div class="p-6 flex-grow flex flex-col">
-                            <span class="text-xs font-semibold text-gold-600 mb-2 uppercase tracking-wider">${ann.date}</span>
-                            <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">${ann.title}</h3>
-                            <p class="text-gray-600 text-sm flex-grow line-clamp-3">${ann.content}</p>
-                            <div class="mt-4 text-gold-600 text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                        <div class="p-6 flex flex-col">
+                            <span class="text-xs font-bold text-gold-600 mb-2 uppercase tracking-wider">${ann.date}</span>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 leading-tight">${ann.title}</h3>
+                            <p class="text-gray-600 text-sm line-clamp-3 leading-relaxed">${ann.content}</p>
+                            <div class="mt-4 text-gold-600 text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
                                 Read More <i class="fas fa-arrow-right"></i>
                             </div>
                         </div>
