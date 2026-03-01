@@ -67,143 +67,197 @@
         .animate-fade-in-up {
             animation: fadeInUp 0.8s ease-out forwards;
         }
+
+        /* Dark Mode Enhancements */
+        .glass-panel {
+            background: rgba(31, 41, 55, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .hover-glow:hover {
+            box-shadow: 0 0 15px rgba(213, 148, 36, 0.5);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 10px rgba(213, 148, 36, 0.3);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d59424; 
+        }
+
+        /* Selection Color */
+        ::selection {
+            background: #d59424;
+            color: #ffffff;
+        }
+
+        /* Custom Animations */
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 8s linear infinite;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen">
+<body class="bg-gray-900 text-gray-100 font-sans flex flex-col min-h-screen">
 
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
     <!-- Post Modal -->
-    <div id="post-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeModal(event)">
-        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform transition-all scale-95 opacity-0" id="modal-content">
+    <div id="post-modal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeModal(event)">
+        <div class="glass-panel rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform transition-all scale-95 opacity-0 border border-gray-700" id="modal-content">
             <div class="relative">
-                <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10">
+                <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10 hover:rotate-90 duration-300">
                     <i class="fas fa-times text-xl w-6 h-6 flex items-center justify-center"></i>
                 </button>
-                <img id="modal-image" src="" alt="Post Image" class="w-full h-auto max-h-[80vh] object-contain rounded-t-2xl bg-gray-100">
+                <img id="modal-image" src="" alt="Post Image" class="w-full h-auto max-h-[80vh] object-contain rounded-t-2xl bg-gray-900/50">
             </div>
             <div class="p-8">
-                <span id="modal-date" class="text-sm font-semibold text-gold-600 uppercase tracking-wider block mb-2"></span>
-                <h2 id="modal-title" class="text-3xl font-serif font-bold text-gray-900 mb-6"></h2>
-                <p id="modal-body" class="text-gray-700 leading-relaxed whitespace-pre-wrap text-lg"></p>
+                <span id="modal-date" class="text-sm font-semibold text-gold-500 uppercase tracking-wider block mb-2 flex items-center gap-2"><i class="far fa-calendar-alt"></i> <span></span></span>
+                <h2 id="modal-title" class="text-3xl font-serif font-bold text-white mb-6 text-glow"></h2>
+                <p id="modal-body" class="text-gray-300 leading-relaxed whitespace-pre-wrap text-lg font-light"></p>
             </div>
         </div>
     </div>
 
     <!-- Login Modal -->
-    <div id="login-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeLoginModal(event)">
-        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl transform transition-all scale-95 opacity-0 p-8 text-center" id="login-modal-content">
+    <div id="login-modal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeLoginModal(event)">
+        <div class="glass-panel rounded-2xl max-w-md w-full shadow-2xl transform transition-all scale-95 opacity-0 p-8 text-center border border-gray-700" id="login-modal-content">
             <div class="mb-6">
-                <div class="w-16 h-16 bg-gold-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-user-shield text-3xl text-gold-600"></i>
+                <div class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-gold-500 shadow-lg shadow-gold-500/20 animate-pulse-slow">
+                    <i class="fas fa-user-shield text-4xl text-gold-500"></i>
                 </div>
-                <h2 class="text-2xl font-serif font-bold text-gray-900">Admin Access</h2>
-                <p class="text-gray-600 mt-2">Please sign in to manage website content.</p>
+                <h2 class="text-2xl font-serif font-bold text-white text-glow">Admin Access</h2>
+                <p class="text-gray-400 mt-2">Please sign in to manage website content.</p>
             </div>
             
-            <button onclick="handleLogin()" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-xl transition-all shadow-sm hover:shadow-md group">
+            <button onclick="handleLogin()" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-gray-900 font-medium py-3 px-4 rounded-xl transition-all shadow-lg hover:shadow-xl group transform hover:-translate-y-1">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-6 h-6">
-                <span class="group-hover:text-gray-900">Sign in with Google</span>
+                <span class="group-hover:text-black font-bold">Sign in with Google</span>
             </button>
             
-            <button onclick="closeLoginModal()" class="mt-6 text-sm text-gray-400 hover:text-gray-600 transition-colors">
-                Cancel
+            <button onclick="closeLoginModal()" class="mt-6 text-sm text-gray-500 hover:text-gray-300 transition-colors flex items-center justify-center gap-2 mx-auto">
+                <i class="fas fa-arrow-left"></i> Return to Website
             </button>
         </div>
     </div>
 
     <!-- Navbar -->
-    <nav class="bg-white shadow-md sticky top-0 z-40">
+    <nav class="bg-gray-900/95 backdrop-blur-md shadow-lg sticky top-0 z-40 border-b border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <div class="flex items-center gap-3">
-                    <img id="nav-logo" src="https://ui-avatars.com/api/?name=PG&background=d59424&color=fff&rounded=true" alt="Church Logo" class="h-12 w-12 object-cover rounded-full border-2 border-gold-500">
+                <div class="flex items-center gap-3 group">
+                    <img id="nav-logo" src="https://ui-avatars.com/api/?name=PG&background=d59424&color=fff&rounded=true" alt="Church Logo" class="h-12 w-12 object-cover rounded-full border-2 border-gold-500 group-hover:scale-105 transition-transform duration-300 shadow-lg shadow-gold-500/20">
                     <div class="flex flex-col">
-                        <span class="font-serif font-bold text-xl text-gray-900 leading-tight">Pentecostals of Gutad</span>
-                        <span class="text-xs text-gold-600 font-medium">Floridablanca, Pampanga</span>
+                        <span class="font-serif font-bold text-xl text-white leading-tight group-hover:text-gold-400 transition-colors">Pentecostals of Gutad</span>
+                        <span class="text-xs text-gold-500 font-medium tracking-wide">Floridablanca, Pampanga</span>
                     </div>
                 </div>
                 <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#home" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Home</a>
-                    <a href="#announcements" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Announcements</a>
-                    <a href="#events" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Events & Gallery</a>
-                    <a href="#resources" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Resources</a>
-                    <a href="#location" class="text-gray-600 hover:text-gold-600 font-medium transition-colors">Location</a>
+                    <a href="#home" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Home</a>
+                    <a href="#announcements" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Announcements</a>
+                    <a href="#events" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Events & Gallery</a>
+                    <a href="#resources" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Resources</a>
+                    <a href="#location" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Location</a>
                 </div>
                 <!-- Mobile menu button -->
                 <div class="md:hidden flex items-center">
-                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-gray-900 focus:outline-none p-2">
+                    <button onclick="toggleMobileMenu()" class="text-gray-300 hover:text-white focus:outline-none p-2 transition-colors">
                         <i class="fas fa-bars text-2xl"></i>
                     </button>
                 </div>
             </div>
         </div>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 px-4 pt-2 pb-4 space-y-1 shadow-lg">
-            <a href="#home" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Home</a>
-            <a href="#announcements" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Announcements</a>
-            <a href="#events" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Events & Gallery</a>
-            <a href="#resources" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Resources</a>
-            <a href="#location" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gold-50 hover:text-gold-600 rounded-md" onclick="toggleMobileMenu()">Location</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-800 border-t border-gray-700 px-4 pt-2 pb-4 space-y-1 shadow-lg">
+            <a href="#home" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Home</a>
+            <a href="#announcements" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Announcements</a>
+            <a href="#events" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Events & Gallery</a>
+            <a href="#resources" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Resources</a>
+            <a href="#location" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Location</a>
         </div>
     </nav>
 
     <!-- ADMIN DASHBOARD (Hidden by default) -->
-    <section id="admin-dashboard" class="hidden bg-gray-900 text-white border-b-4 border-gold-500 py-8 shadow-inner">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="admin-dashboard" class="hidden bg-gray-900 text-white border-b-4 border-gold-500 py-8 shadow-inner relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-700">
                 <div class="flex items-center gap-3">
-                    <i class="fas fa-cogs text-3xl text-gold-500"></i>
-                    <h2 class="text-2xl font-bold font-serif">Admin Control Panel</h2>
+                    <i class="fas fa-cogs text-3xl text-gold-500 animate-spin-slow"></i>
+                    <h2 class="text-2xl font-bold font-serif text-glow">Admin Control Panel</h2>
                 </div>
-                <span class="text-xs text-gray-400 bg-gray-800 px-3 py-1 rounded-full"><i class="fas fa-info-circle mr-1"></i> Max file size: 750KB</span>
+                <span class="text-xs text-gray-400 bg-gray-800 px-3 py-1 rounded-full border border-gray-700"><i class="fas fa-info-circle mr-1 text-gold-500"></i> Max file size: 750KB</span>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Update Logo -->
-                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col">
-                    <h3 class="text-lg font-semibold text-gold-400 mb-4"><i class="fas fa-church mr-2"></i>Update Logo</h3>
-                    <input type="file" id="logo-upload" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gold-500 file:text-white hover:file:bg-gold-600 mb-4">
-                    <button onclick="updateLogo()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Save Logo</button>
+                <div class="glass-panel p-6 rounded-xl flex flex-col hover:border-gold-500/50 transition-colors duration-300">
+                    <h3 class="text-lg font-semibold text-gold-400 mb-4 flex items-center"><i class="fas fa-church mr-2"></i>Update Logo</h3>
+                    <input type="file" id="logo-upload" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gold-500 file:text-white hover:file:bg-gold-600 mb-4 cursor-pointer">
+                    <button onclick="updateLogo()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto shadow-lg shadow-gold-600/20 hover:shadow-gold-600/40 transform hover:-translate-y-0.5">Save Logo</button>
                 </div>
 
                 <!-- Post Announcement -->
-                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col">
-                    <h3 class="text-lg font-semibold text-gold-400 mb-4"><i class="fas fa-bullhorn mr-2"></i>New Announcement</h3>
-                    <input type="text" id="ann-title" placeholder="Title" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none">
-                    <textarea id="ann-content" placeholder="Content details..." rows="2" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none"></textarea>
+                <div class="glass-panel p-6 rounded-xl flex flex-col hover:border-gold-500/50 transition-colors duration-300">
+                    <h3 class="text-lg font-semibold text-gold-400 mb-4 flex items-center"><i class="fas fa-bullhorn mr-2"></i>New Announcement</h3>
+                    <input type="text" id="ann-title" placeholder="Title" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none transition-colors placeholder-gray-500">
+                    <textarea id="ann-content" placeholder="Content details..." rows="2" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none transition-colors placeholder-gray-500"></textarea>
                     <label class="block text-xs text-gray-400 mb-1">Thumbnail Image (Max 750KB)</label>
-                    <input type="file" id="ann-img" accept="image/*" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-2">
+                    <input type="file" id="ann-img" accept="image/*" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-700 file:text-white file:hover:bg-gray-600 mb-2 cursor-pointer">
                     <div class="text-center text-xs text-gray-500 mb-2">- OR -</div>
-                    <input type="text" id="ann-url" placeholder="Paste Google Drive / Image Link" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-2 border border-gray-600 focus:border-gold-500 outline-none text-sm">
+                    <input type="text" id="ann-url" placeholder="Paste Google Drive / Image Link" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-2 border border-gray-600 focus:border-gold-500 outline-none text-sm transition-colors placeholder-gray-500">
                     <div class="flex items-center mb-4">
-                        <input type="checkbox" id="ann-pinned" class="w-4 h-4 text-gold-600 bg-gray-700 border-gray-600 rounded focus:ring-gold-500 focus:ring-2">
-                        <label for="ann-pinned" class="ml-2 text-xs text-gray-400">Pin to top</label>
+                        <input type="checkbox" id="ann-pinned" class="w-4 h-4 text-gold-600 bg-gray-700 border-gray-600 rounded focus:ring-gold-500 focus:ring-2 cursor-pointer">
+                        <label for="ann-pinned" class="ml-2 text-xs text-gray-400 cursor-pointer select-none">Pin to top</label>
                     </div>
-                    <button id="post-ann-btn" onclick="postAnnouncement()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Post</button>
+                    <button id="post-ann-btn" onclick="postAnnouncement()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto shadow-lg shadow-gold-600/20 hover:shadow-gold-600/40 transform hover:-translate-y-0.5">Post</button>
                 </div>
 
                 <!-- Add Event/Gallery -->
-                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col">
-                    <h3 class="text-lg font-semibold text-gold-400 mb-4"><i class="fas fa-camera mr-2"></i>Add to Gallery</h3>
-                    <input type="text" id="gal-title" placeholder="Event Title / Description" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none">
+                <div class="glass-panel p-6 rounded-xl flex flex-col hover:border-gold-500/50 transition-colors duration-300">
+                    <h3 class="text-lg font-semibold text-gold-400 mb-4 flex items-center"><i class="fas fa-camera mr-2"></i>Add to Gallery</h3>
+                    <input type="text" id="gal-title" placeholder="Event Title / Description" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none transition-colors placeholder-gray-500">
                     <label class="block text-xs text-gray-400 mb-1">Event Photo(s) (Max 750KB each, PNG/JPG)</label>
-                    <input type="file" id="gal-img" accept="image/png, image/jpeg" multiple class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-2">
+                    <input type="file" id="gal-img" accept="image/png, image/jpeg" multiple class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-700 file:text-white file:hover:bg-gray-600 mb-2 cursor-pointer">
                     <div class="text-center text-xs text-gray-500 mb-2">- OR -</div>
-                    <input type="text" id="gal-url" placeholder="Paste Google Drive / Image Link" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none text-sm">
-                    <button onclick="postGallery()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Upload Photo</button>
+                    <input type="text" id="gal-url" placeholder="Paste Google Drive / Image Link" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none text-sm transition-colors placeholder-gray-500">
+                    <button onclick="postGallery()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto shadow-lg shadow-gold-600/20 hover:shadow-gold-600/40 transform hover:-translate-y-0.5">Upload Photo</button>
                 </div>
 
                 <!-- Upload PDF -->
-                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col">
-                    <h3 class="text-lg font-semibold text-gold-400 mb-4"><i class="fas fa-file-pdf mr-2"></i>Upload Material</h3>
-                    <input type="text" id="pdf-title" placeholder="Material Title" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none">
+                <div class="glass-panel p-6 rounded-xl flex flex-col hover:border-gold-500/50 transition-colors duration-300">
+                    <h3 class="text-lg font-semibold text-gold-400 mb-4 flex items-center"><i class="fas fa-file-pdf mr-2"></i>Upload Material</h3>
+                    <input type="text" id="pdf-title" placeholder="Material Title" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none transition-colors placeholder-gray-500">
                     <label class="block text-xs text-gray-400 mb-1">PDF File (Max 750KB)</label>
-                    <input type="file" id="pdf-file" accept=".pdf" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-2">
+                    <input type="file" id="pdf-file" accept=".pdf" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-700 file:text-white file:hover:bg-gray-600 mb-2 cursor-pointer">
                     <div class="text-center text-xs text-gray-500 mb-2">- OR -</div>
-                    <input type="text" id="pdf-url" placeholder="Paste Google Drive / File Link" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none text-sm">
-                    <button onclick="uploadPDF()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Upload PDF</button>
+                    <input type="text" id="pdf-url" placeholder="Paste Google Drive / File Link" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none text-sm transition-colors placeholder-gray-500">
+                    <button onclick="uploadPDF()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto shadow-lg shadow-gold-600/20 hover:shadow-gold-600/40 transform hover:-translate-y-0.5">Upload PDF</button>
                 </div>
             </div>
         </div>
@@ -233,20 +287,21 @@
     </section>
 
     <!-- Main Content Area -->
-    <main class="flex-grow">
+    <main class="flex-grow bg-gray-900">
         <!-- Announcements Section -->
-        <section id="announcements" class="py-20 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="announcements" class="py-20 bg-gray-900 relative">
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="text-center mb-16 reveal">
-                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Church Announcements</h2>
-                    <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4 text-glow">Church Announcements</h2>
+                    <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full shadow-[0_0_10px_rgba(213,148,36,0.5)]"></div>
                 </div>
                 
                 <div id="announcements-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 reveal delay-100">
                     <!-- Populated by JS -->
                 </div>
                 
-                <div id="no-announcements" class="text-center text-gray-500 py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300 reveal">
+                <div id="no-announcements" class="text-center text-gray-400 py-10 bg-gray-800/50 rounded-xl border border-dashed border-gray-700 reveal backdrop-blur-sm">
                     <i class="fas fa-circle-notch fa-spin text-4xl mb-3 text-gold-500"></i>
                     <p>Loading announcements...</p>
                 </div>
@@ -254,18 +309,19 @@
         </section>
 
         <!-- Events & Gallery Section -->
-        <section id="events" class="py-20 bg-gray-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="events" class="py-20 bg-gray-800 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-gray-900 to-gray-800 opacity-50"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="text-center mb-16 reveal">
-                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Past Events & Gallery</h2>
-                    <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4 text-glow">Past Events & Gallery</h2>
+                    <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full shadow-[0_0_10px_rgba(213,148,36,0.5)]"></div>
                 </div>
 
                 <div id="gallery-grid" class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 reveal delay-100">
                     <!-- Populated by JS -->
                 </div>
                 
-                <div id="no-gallery" class="text-center text-gray-500 py-10 bg-white rounded-xl border border-dashed border-gray-300 reveal">
+                <div id="no-gallery" class="text-center text-gray-400 py-10 bg-gray-900/50 rounded-xl border border-dashed border-gray-700 reveal backdrop-blur-sm">
                     <i class="fas fa-circle-notch fa-spin text-4xl mb-3 text-gold-500"></i>
                     <p>Loading gallery...</p>
                 </div>
@@ -273,11 +329,11 @@
         </section>
 
         <!-- Resources Section -->
-        <section id="resources" class="py-20 bg-white">
+        <section id="resources" class="py-20 bg-gray-900 relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16 reveal">
-                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Word of God Materials</h2>
-                    <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4 text-glow">Word of God Materials</h2>
+                    <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full shadow-[0_0_10px_rgba(213,148,36,0.5)]"></div>
                 </div>
 
                 <div class="max-w-4xl mx-auto reveal delay-100">
@@ -285,7 +341,7 @@
                         <!-- Populated by JS -->
                     </div>
                     
-                    <div id="no-resources" class="text-center text-gray-500 py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                    <div id="no-resources" class="text-center text-gray-400 py-10 bg-gray-800/50 rounded-xl border border-dashed border-gray-700 backdrop-blur-sm">
                         <i class="fas fa-circle-notch fa-spin text-4xl mb-3 text-gold-500"></i>
                         <p>Loading materials...</p>
                     </div>
@@ -295,16 +351,16 @@
     </main>
 
     <!-- Location Section -->
-    <section id="location" class="py-20 bg-gray-50 border-t border-gray-200">
+    <section id="location" class="py-20 bg-gray-800 border-t border-gray-700 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 reveal">
-                <h2 class="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Visit Us</h2>
-                <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full"></div>
-                <p class="mt-4 text-gray-600">Join us for worship and fellowship.</p>
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4 text-glow">Visit Us</h2>
+                <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full shadow-[0_0_10px_rgba(213,148,36,0.5)]"></div>
+                <p class="mt-4 text-gray-400">Join us for worship and fellowship.</p>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 flex flex-col md:flex-row reveal delay-100">
-                <div class="w-full md:w-1/2 h-96 bg-gray-200 relative">
+            <div class="bg-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-gray-700 flex flex-col md:flex-row reveal delay-100 hover:shadow-gold-500/10 transition-shadow duration-500">
+                <div class="w-full md:w-1/2 h-96 bg-gray-800 relative">
                     <iframe 
                         width="100%" 
                         height="100%" 
@@ -312,30 +368,31 @@
                         scrolling="no" 
                         marginheight="0" 
                         marginwidth="0" 
+                        style="filter: grayscale(100%) invert(92%) contrast(83%);"
                         src="https://maps.google.com/maps?q=Pentecostals%20of%20Gutad%2C%20Floridablanca%2C%20Pampanga&t=&z=15&ie=UTF8&iwloc=&output=embed">
                     </iframe>
                 </div>
                 <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Pentecostals of Gutad</h3>
-                    <div class="space-y-4 text-gray-600 mb-8">
-                        <p class="flex items-start gap-3">
-                            <i class="fas fa-map-marker-alt text-gold-500 mt-1 text-xl"></i>
-                            <span>Brgy. Gutad, Floridablanca<br>Pampanga, Philippines 2006</span>
+                    <h3 class="text-2xl font-bold text-white mb-4">Pentecostals of Gutad</h3>
+                    <div class="space-y-4 text-gray-300 mb-8">
+                        <p class="flex items-start gap-3 group">
+                            <i class="fas fa-map-marker-alt text-gold-500 mt-1 text-xl group-hover:scale-125 transition-transform"></i>
+                            <span class="group-hover:text-white transition-colors">Brgy. Gutad, Floridablanca<br>Pampanga, Philippines 2006</span>
                         </p>
-                        <p class="flex items-center gap-3">
-                            <i class="fas fa-clock text-gold-500 text-xl"></i>
-                            <span>Sunday Service: 9:00 AM</span>
+                        <p class="flex items-center gap-3 group">
+                            <i class="fas fa-clock text-gold-500 text-xl group-hover:rotate-180 transition-transform duration-500"></i>
+                            <span class="group-hover:text-white transition-colors">Sunday Service: 9:00 AM</span>
                         </p>
-                        <p class="flex items-center gap-3">
-                            <i class="fas fa-envelope text-gold-500 text-xl"></i>
-                            <span>gutadpentecostals@gmail.com</span>
+                        <p class="flex items-center gap-3 group">
+                            <i class="fas fa-envelope text-gold-500 text-xl group-hover:scale-110 transition-transform"></i>
+                            <span class="group-hover:text-white transition-colors">gutadpentecostals@gmail.com</span>
                         </p>
-                        <p class="flex items-center gap-3">
-                            <i class="fab fa-facebook text-gold-500 text-xl"></i>
-                            <a href="https://web.facebook.com/PentecostalsofGutad" target="_blank" class="hover:text-gold-600 transition-colors">Pentecostals of Gutad</a>
+                        <p class="flex items-center gap-3 group">
+                            <i class="fab fa-facebook text-gold-500 text-xl group-hover:scale-110 transition-transform"></i>
+                            <a href="https://web.facebook.com/PentecostalsofGutad" target="_blank" class="hover:text-gold-400 transition-colors group-hover:text-white">Pentecostals of Gutad</a>
                         </p>
                     </div>
-                    <a href="https://maps.app.goo.gl/2TmhtW2ytbQA9iHq8" target="_blank" class="inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-600 text-white font-bold py-3 px-8 rounded-full transition-colors shadow-lg shadow-gold-500/30 w-full sm:w-auto">
+                    <a href="https://maps.app.goo.gl/2TmhtW2ytbQA9iHq8" target="_blank" class="inline-flex items-center justify-center gap-2 bg-gold-600 hover:bg-gold-500 text-white font-bold py-3 px-8 rounded-full transition-all shadow-lg shadow-gold-600/20 hover:shadow-gold-500/40 hover:-translate-y-1 w-full sm:w-auto">
                         <i class="fas fa-directions"></i> Get Directions
                     </a>
                 </div>
@@ -920,11 +977,9 @@
             document.getElementById('modal-image').src = item.image;
             
             const dateEl = document.getElementById('modal-date');
-            if (item.date) {
-                dateEl.textContent = item.date;
-                dateEl.classList.remove('hidden');
-            } else if (item.timestamp) {
-                dateEl.textContent = new Date(item.timestamp).toLocaleDateString();
+            if (item.date || item.timestamp) {
+                const dateStr = item.date || new Date(item.timestamp).toLocaleDateString();
+                dateEl.innerHTML = `<i class="far fa-calendar-alt text-gold-500 mr-2"></i> ${dateStr}`;
                 dateEl.classList.remove('hidden');
             } else {
                 dateEl.classList.add('hidden');
@@ -988,13 +1043,13 @@
                 
                 let adminControls = '';
                 if (state.isAdmin) {
-                    const pinIcon = ann.isPinned ? 'fa-thumbtack text-gold-500' : 'fa-thumbtack text-gray-300';
+                    const pinIcon = ann.isPinned ? 'fa-thumbtack text-gold-500' : 'fa-thumbtack text-gray-400';
                     const pinTitle = ann.isPinned ? 'Unpin' : 'Pin to top';
                     adminControls = `
                         <div class="absolute top-2 right-2 flex gap-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" onclick="event.stopPropagation()">
-                            <button onclick="togglePinAnnouncement('${ann.id}', ${!!ann.isPinned})" class="bg-white text-gray-700 w-8 h-8 rounded-full shadow-lg hover:bg-gray-100 transition flex items-center justify-center" title="${pinTitle}"><i class="fas ${pinIcon} text-xs"></i></button>
-                            <button onclick="editAnnouncement('${ann.id}')" class="bg-blue-500 text-white w-8 h-8 rounded-full shadow-lg hover:bg-blue-600 transition flex items-center justify-center" title="Edit"><i class="fas fa-edit text-xs"></i></button>
-                            <button onclick="deleteAnnouncement('${ann.id}')" class="bg-red-500 text-white w-8 h-8 rounded-full shadow-lg hover:bg-red-600 transition flex items-center justify-center" title="Delete"><i class="fas fa-trash text-xs"></i></button>
+                            <button onclick="togglePinAnnouncement('${ann.id}', ${!!ann.isPinned})" class="bg-gray-700 text-white w-8 h-8 rounded-full shadow-lg hover:bg-gray-600 transition flex items-center justify-center border border-gray-600" title="${pinTitle}"><i class="fas ${pinIcon} text-xs"></i></button>
+                            <button onclick="editAnnouncement('${ann.id}')" class="bg-blue-600 text-white w-8 h-8 rounded-full shadow-lg hover:bg-blue-700 transition flex items-center justify-center border border-blue-500" title="Edit"><i class="fas fa-edit text-xs"></i></button>
+                            <button onclick="deleteAnnouncement('${ann.id}')" class="bg-red-600 text-white w-8 h-8 rounded-full shadow-lg hover:bg-red-700 transition flex items-center justify-center border border-red-500" title="Delete"><i class="fas fa-trash text-xs"></i></button>
                         </div>
                     `;
                 }
@@ -1002,19 +1057,21 @@
                 const pinnedBadge = ann.isPinned ? `<div class="absolute top-4 left-4 bg-gold-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10"><i class="fas fa-thumbtack mr-1"></i> Pinned</div>` : '';
 
                 grid.innerHTML += `
-                    <div onclick="openModal(${safeAnn})" class="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 break-inside-avoid overflow-hidden relative group cursor-pointer transform hover:-translate-y-2 border border-gray-100 ${ann.isPinned ? 'ring-2 ring-gold-500/50' : ''}">
+                    <div onclick="openModal(${safeAnn})" class="bg-gray-800 rounded-3xl shadow-lg hover:shadow-2xl hover:shadow-gold-500/10 transition-all duration-300 break-inside-avoid overflow-hidden relative group cursor-pointer transform hover:-translate-y-2 border border-gray-700 ${ann.isPinned ? 'ring-2 ring-gold-500/50 shadow-gold-500/20' : ''}">
                         ${adminControls}
                         ${pinnedBadge}
-                        <div class="relative">
-                            <img src="${ann.image}" alt="${ann.title}" class="w-full h-auto object-contain">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
+                        <div class="relative overflow-hidden">
+                            <img src="${ann.image}" alt="${ann.title}" class="w-full h-auto object-contain transform group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-80"></div>
                         </div>
-                        <div class="p-6 flex flex-col">
-                            <span class="text-xs font-bold text-gold-600 mb-2 uppercase tracking-wider">${ann.date}</span>
-                            <h3 class="text-xl font-bold text-gray-900 mb-3 leading-tight">${ann.title}</h3>
-                            <p class="text-gray-600 text-sm line-clamp-3 leading-relaxed">${ann.content}</p>
-                            <div class="mt-4 text-gold-600 text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
-                                Read More <i class="fas fa-arrow-right"></i>
+                        <div class="p-6 flex flex-col relative">
+                            <span class="text-xs font-bold text-gold-500 mb-2 uppercase tracking-wider flex items-center gap-2">
+                                <i class="far fa-calendar-alt"></i> ${ann.date}
+                            </span>
+                            <h3 class="text-xl font-bold text-white mb-3 leading-tight group-hover:text-gold-400 transition-colors">${ann.title}</h3>
+                            <p class="text-gray-400 text-sm line-clamp-3 leading-relaxed">${ann.content}</p>
+                            <div class="mt-4 text-gold-500 text-sm font-bold flex items-center gap-2 group-hover:gap-3 transition-all">
+                                Read More <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
                             </div>
                         </div>
                     </div>`;
@@ -1038,10 +1095,13 @@
             state.gallery.forEach(item => {
                 const safeItem = JSON.stringify(item).replace(/"/g, '&quot;');
                 grid.innerHTML += `
-                    <div onclick="openModal(${safeItem})" class="relative group break-inside-avoid rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer">
-                        <img src="${item.image}" alt="${item.title}" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                            <p class="text-white font-medium">${item.title}</p>
+                    <div onclick="openModal(${safeItem})" class="relative group break-inside-avoid rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-gold-500/20 transition-all duration-500 cursor-pointer border border-gray-700">
+                        <img src="${item.image}" alt="${item.title}" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                            <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                <p class="text-white font-bold text-lg text-glow">${item.title}</p>
+                                <div class="w-12 h-1 bg-gold-500 mt-2 rounded-full"></div>
+                            </div>
                         </div>
                     </div>`;
             });
@@ -1068,18 +1128,18 @@
                 const downloadAttr = isDataUrl ? `download="${res.title}.pdf"` : 'target="_blank"';
 
                 list.innerHTML += `
-                    <div class="flex items-center justify-between p-5 bg-gray-50 hover:bg-gold-50 border border-gray-100 rounded-xl transition-colors group">
+                    <div class="flex items-center justify-between p-5 bg-gray-800 hover:bg-gray-750 border border-gray-700 hover:border-gold-500/50 rounded-xl transition-all duration-300 group hover:shadow-lg hover:shadow-gold-500/10 hover:-translate-y-1">
                         <div class="flex items-center gap-4">
-                            <div class="h-12 w-12 bg-white rounded-full shadow-sm flex items-center justify-center text-red-500 group-hover:text-gold-600 group-hover:scale-110 transition-all">
+                            <div class="h-12 w-12 bg-gray-700 rounded-full shadow-inner flex items-center justify-center text-red-400 group-hover:text-gold-500 group-hover:scale-110 transition-all duration-300">
                                 <i class="fas fa-file-pdf text-xl"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-900">${res.title}</h4>
-                                <p class="text-xs text-gray-500 mt-1">PDF Document • ${res.size}</p>
+                                <h4 class="font-bold text-gray-100 group-hover:text-gold-400 transition-colors">${res.title}</h4>
+                                <p class="text-xs text-gray-400 mt-1">PDF Document • ${res.size}</p>
                             </div>
                         </div>
-                        <a href="${res.file}" ${downloadAttr} class="bg-white border border-gray-200 hover:border-gold-500 hover:text-gold-600 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
-                            <i class="fas ${actionIcon}"></i> <span class="hidden sm:inline">${actionText}</span>
+                        <a href="${res.file}" ${downloadAttr} class="bg-gray-700 border border-gray-600 hover:bg-gold-600 hover:border-gold-500 hover:text-white text-gray-300 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-2 group/btn">
+                            <i class="fas ${actionIcon} group-hover/btn:animate-bounce"></i> <span class="hidden sm:inline">${actionText}</span>
                         </a>
                     </div>`;
             });
