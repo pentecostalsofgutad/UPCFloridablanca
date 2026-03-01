@@ -176,7 +176,11 @@
                     <label class="block text-xs text-gray-400 mb-1">Thumbnail Image (Max 750KB)</label>
                     <input type="file" id="ann-img" accept="image/*" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-2">
                     <div class="text-center text-xs text-gray-500 mb-2">- OR -</div>
-                    <input type="text" id="ann-url" placeholder="Paste Google Drive / Image Link" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none text-sm">
+                    <input type="text" id="ann-url" placeholder="Paste Google Drive / Image Link" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-2 border border-gray-600 focus:border-gold-500 outline-none text-sm">
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" id="ann-pinned" class="w-4 h-4 text-gold-600 bg-gray-700 border-gray-600 rounded focus:ring-gold-500 focus:ring-2">
+                        <label for="ann-pinned" class="ml-2 text-xs text-gray-400">Pin to top</label>
+                    </div>
                     <button id="post-ann-btn" onclick="postAnnouncement()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Post</button>
                 </div>
 
@@ -639,6 +643,7 @@
             const content = document.getElementById('ann-content').value.trim();
             const fileInput = document.getElementById('ann-img');
             const urlInput = document.getElementById('ann-url').value.trim();
+            const isPinned = document.getElementById('ann-pinned').checked;
 
             if (!title || !content || (fileInput.files.length === 0 && !urlInput)) {
                 return window.showToast('Fill title, content, and provide an image (File or URL).', 'error');
@@ -648,7 +653,7 @@
                 let image = urlInput ? window.processDriveLink(urlInput) : await window.getBase64(fileInput.files[0]);
                 
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'announcements'), {
-                    title, content, image,
+                    title, content, image, isPinned,
                     date: new Date().toLocaleDateString(),
                     timestamp: Date.now()
                 });
@@ -656,6 +661,7 @@
                 document.getElementById('ann-title').value = '';
                 document.getElementById('ann-content').value = '';
                 document.getElementById('ann-url').value = '';
+                document.getElementById('ann-pinned').checked = false;
                 fileInput.value = '';
                 window.showToast('Announcement posted!');
             } catch (e) {
@@ -742,7 +748,13 @@
 
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'announcements'), (snapshot) => {
                 state.announcements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                state.announcements.sort((a, b) => b.timestamp - a.timestamp); // Sort newest first in memory
+                state.announcements.sort((a, b) => {
+                    // Sort by pinned status first, then by timestamp
+                    if (a.isPinned === b.isPinned) {
+                        return b.timestamp - a.timestamp;
+                    }
+                    return a.isPinned ? -1 : 1;
+                });
                 renderAnnouncements();
             }, (err) => handlePermError(err, 'announcements'));
 
@@ -770,12 +782,24 @@
             }
         }
 
+        window.togglePinAnnouncement = async function(id, currentStatus) {
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'announcements', id), {
+                    isPinned: !currentStatus
+                });
+                window.showToast(currentStatus ? 'Announcement unpinned.' : 'Announcement pinned to top.');
+            } catch (e) {
+                window.showToast(e.message, 'error');
+            }
+        }
+
         window.editAnnouncement = function(id) {
             const ann = state.announcements.find(a => a.id === id);
             if (!ann) return;
 
             document.getElementById('ann-title').value = ann.title;
             document.getElementById('ann-content').value = ann.content;
+            document.getElementById('ann-pinned').checked = !!ann.isPinned;
             
             // If image is a URL, populate it
             if (ann.image && (ann.image.includes('http') || ann.image.includes('drive.google.com'))) {
@@ -811,6 +835,7 @@
             document.getElementById('ann-content').value = '';
             document.getElementById('ann-url').value = '';
             document.getElementById('ann-img').value = '';
+            document.getElementById('ann-pinned').checked = false;
             
             const btn = document.getElementById('post-ann-btn');
             btn.textContent = 'Post';
@@ -826,6 +851,7 @@
             const content = document.getElementById('ann-content').value.trim();
             const fileInput = document.getElementById('ann-img');
             const urlInput = document.getElementById('ann-url').value.trim();
+            const isPinned = document.getElementById('ann-pinned').checked;
 
             if (!title || !content) {
                 return window.showToast('Title and content are required.', 'error');
@@ -835,6 +861,7 @@
                 const updateData = {
                     title, 
                     content,
+                    isPinned,
                     // Keep original timestamp or update? Let's keep original for sorting, or maybe add updated_at
                 };
 
@@ -930,17 +957,23 @@
                 
                 let adminControls = '';
                 if (state.isAdmin) {
+                    const pinIcon = ann.isPinned ? 'fa-thumbtack text-gold-500' : 'fa-thumbtack text-gray-300';
+                    const pinTitle = ann.isPinned ? 'Unpin' : 'Pin to top';
                     adminControls = `
                         <div class="absolute top-2 right-2 flex gap-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" onclick="event.stopPropagation()">
+                            <button onclick="togglePinAnnouncement('${ann.id}', ${!!ann.isPinned})" class="bg-white text-gray-700 w-8 h-8 rounded-full shadow-lg hover:bg-gray-100 transition flex items-center justify-center" title="${pinTitle}"><i class="fas ${pinIcon} text-xs"></i></button>
                             <button onclick="editAnnouncement('${ann.id}')" class="bg-blue-500 text-white w-8 h-8 rounded-full shadow-lg hover:bg-blue-600 transition flex items-center justify-center" title="Edit"><i class="fas fa-edit text-xs"></i></button>
                             <button onclick="deleteAnnouncement('${ann.id}')" class="bg-red-500 text-white w-8 h-8 rounded-full shadow-lg hover:bg-red-600 transition flex items-center justify-center" title="Delete"><i class="fas fa-trash text-xs"></i></button>
                         </div>
                     `;
                 }
 
+                const pinnedBadge = ann.isPinned ? `<div class="absolute top-4 left-4 bg-gold-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10"><i class="fas fa-thumbtack mr-1"></i> Pinned</div>` : '';
+
                 grid.innerHTML += `
-                    <div onclick="openModal(${safeAnn})" class="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 break-inside-avoid overflow-hidden relative group cursor-pointer transform hover:-translate-y-2 border border-gray-100">
+                    <div onclick="openModal(${safeAnn})" class="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 break-inside-avoid overflow-hidden relative group cursor-pointer transform hover:-translate-y-2 border border-gray-100 ${ann.isPinned ? 'ring-2 ring-gold-500/50' : ''}">
                         ${adminControls}
+                        ${pinnedBadge}
                         <div class="relative">
                             <img src="${ann.image}" alt="${ann.title}" class="w-full h-auto object-contain">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
