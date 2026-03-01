@@ -81,7 +81,7 @@
                 <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10">
                     <i class="fas fa-times text-xl w-6 h-6 flex items-center justify-center"></i>
                 </button>
-                <img id="modal-image" src="" alt="Post Image" class="w-full h-64 md:h-96 object-cover rounded-t-2xl">
+                <img id="modal-image" src="" alt="Post Image" class="w-full h-auto max-h-[80vh] object-contain rounded-t-2xl bg-gray-100">
             </div>
             <div class="p-8">
                 <span id="modal-date" class="text-sm font-semibold text-gold-600 uppercase tracking-wider block mb-2"></span>
@@ -188,8 +188,8 @@
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col">
                     <h3 class="text-lg font-semibold text-gold-400 mb-4"><i class="fas fa-camera mr-2"></i>Add to Gallery</h3>
                     <input type="text" id="gal-title" placeholder="Event Title / Description" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none">
-                    <label class="block text-xs text-gray-400 mb-1">Event Photo (Max 750KB)</label>
-                    <input type="file" id="gal-img" accept="image/*" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-2">
+                    <label class="block text-xs text-gray-400 mb-1">Event Photo(s) (Max 750KB each, PNG/JPG)</label>
+                    <input type="file" id="gal-img" accept="image/png, image/jpeg" multiple class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-600 file:text-white mb-2">
                     <div class="text-center text-xs text-gray-500 mb-2">- OR -</div>
                     <input type="text" id="gal-url" placeholder="Paste Google Drive / Image Link" class="w-full bg-gray-700 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none text-sm">
                     <button onclick="postGallery()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto">Upload Photo</button>
@@ -675,19 +675,50 @@
             const fileInput = document.getElementById('gal-img');
             const urlInput = document.getElementById('gal-url').value.trim();
 
-            if (!title || (fileInput.files.length === 0 && !urlInput)) return window.showToast('Provide a description and an image (File or URL).', 'error');
+            if (!title || (fileInput.files.length === 0 && !urlInput)) return window.showToast('Provide a description and at least one image (File or URL).', 'error');
+
+            const btn = document.querySelector('button[onclick="postGallery()"]');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Uploading...';
 
             try {
-                let image = urlInput ? window.processDriveLink(urlInput) : await window.getBase64(fileInput.files[0]);
-
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'gallery'), { title, image, timestamp: Date.now() });
+                if (urlInput) {
+                    let image = window.processDriveLink(urlInput);
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'gallery'), { title, image, timestamp: Date.now() });
+                    window.showToast('Photo added to gallery!');
+                } else {
+                    const files = Array.from(fileInput.files);
+                    let successCount = 0;
+                    
+                    for (const file of files) {
+                        try {
+                            // Skip if not an image
+                            if (!file.type.startsWith('image/')) continue;
+                            
+                            let image = await window.getBase64(file);
+                            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'gallery'), { title, image, timestamp: Date.now() });
+                            successCount++;
+                        } catch (err) {
+                            console.error("Failed to upload file:", file.name, err);
+                        }
+                    }
+                    
+                    if (successCount > 0) {
+                        window.showToast(`${successCount} photo(s) added to gallery!`);
+                    } else {
+                        throw new Error('No valid images were uploaded.');
+                    }
+                }
                 
                 document.getElementById('gal-title').value = '';
                 document.getElementById('gal-url').value = '';
                 fileInput.value = '';
-                window.showToast('Photo added to gallery!');
             } catch (e) {
                 window.showToast(e.message || 'Error uploading photo.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
             }
         }
 
