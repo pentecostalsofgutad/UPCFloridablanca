@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -26,8 +27,8 @@
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-                        serif: ['Merriweather', 'ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        display: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
                     }
                 }
             }
@@ -120,6 +121,34 @@
         .animate-pulse-slow {
             animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
+
+        /* Spring Animation for Modals */
+        .ease-spring {
+            transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* 3D Text Effect */
+        .text-3d-gold {
+            text-shadow: 
+                0 1px 0 #b8741b,
+                0 2px 0 #945418,
+                0 3px 0 #7a431a,
+                0 4px 0 #663719,
+                0 6px 1px rgba(0,0,0,.1),
+                0 0 5px rgba(0,0,0,.1),
+                0 1px 3px rgba(0,0,0,.3),
+                0 3px 5px rgba(0,0,0,.2),
+                0 5px 10px rgba(0,0,0,.25);
+        }
+
+        /* Minimal Float Animation */
+        @keyframes float-minimal {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-float-minimal {
+            animation: float-minimal 4s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100 font-sans flex flex-col min-h-screen">
@@ -128,30 +157,33 @@
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
     <!-- Post Modal -->
-    <div id="post-modal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeModal(event)">
-        <div class="glass-panel rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform transition-all scale-95 opacity-0 border border-gray-700" id="modal-content">
+    <div id="post-modal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-500 opacity-0" onclick="closeModal(event)">
+        <div class="glass-panel rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform transition-all duration-500 ease-spring scale-90 opacity-0 border border-gray-700" id="modal-content">
             <div class="relative">
+                <button onclick="shareItem()" class="absolute top-4 right-16 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10 hover:scale-110 duration-300" title="Share">
+                    <i class="fas fa-share-alt text-xl w-6 h-6 flex items-center justify-center"></i>
+                </button>
                 <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors z-10 hover:rotate-90 duration-300">
                     <i class="fas fa-times text-xl w-6 h-6 flex items-center justify-center"></i>
                 </button>
                 <img id="modal-image" src="" alt="Post Image" class="w-full h-auto max-h-[80vh] object-contain rounded-t-2xl bg-gray-900/50">
             </div>
-            <div class="p-8">
+            <div class="p-8" id="modal-text-container">
                 <span id="modal-date" class="text-sm font-semibold text-gold-500 uppercase tracking-wider block mb-2 flex items-center gap-2"><i class="far fa-calendar-alt"></i> <span></span></span>
-                <h2 id="modal-title" class="text-3xl font-serif font-bold text-white mb-6 text-glow"></h2>
+                <h2 id="modal-title" class="text-3xl font-display font-bold text-white mb-6 text-glow"></h2>
                 <p id="modal-body" class="text-gray-300 leading-relaxed whitespace-pre-wrap text-lg font-light"></p>
             </div>
         </div>
     </div>
 
     <!-- Login Modal -->
-    <div id="login-modal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeLoginModal(event)">
-        <div class="glass-panel rounded-2xl max-w-md w-full shadow-2xl transform transition-all scale-95 opacity-0 p-8 text-center border border-gray-700" id="login-modal-content">
+    <div id="login-modal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-500 opacity-0" onclick="closeLoginModal(event)">
+        <div class="glass-panel rounded-2xl max-w-md w-full shadow-2xl transform transition-all duration-500 ease-spring scale-90 opacity-0 p-8 text-center border border-gray-700" id="login-modal-content">
             <div class="mb-6">
                 <div class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-gold-500 shadow-lg shadow-gold-500/20 animate-pulse-slow">
                     <i class="fas fa-user-shield text-4xl text-gold-500"></i>
                 </div>
-                <h2 class="text-2xl font-serif font-bold text-white text-glow">Admin Access</h2>
+                <h2 class="text-2xl font-display font-bold text-white text-glow">Admin Access</h2>
                 <p class="text-gray-400 mt-2">Please sign in to manage website content.</p>
             </div>
             
@@ -173,7 +205,7 @@
                 <div class="flex items-center gap-3 group">
                     <img id="nav-logo" src="https://ui-avatars.com/api/?name=PG&background=d59424&color=fff&rounded=true" alt="Church Logo" class="h-12 w-12 object-cover rounded-full border-2 border-gold-500 group-hover:scale-105 transition-transform duration-300 shadow-lg shadow-gold-500/20">
                     <div class="flex flex-col">
-                        <span class="font-serif font-bold text-xl text-white leading-tight group-hover:text-gold-400 transition-colors">Pentecostals of Gutad</span>
+                        <span class="font-display font-bold text-xl text-white leading-tight group-hover:text-gold-400 transition-colors">Pentecostals of Gutad</span>
                         <span class="text-xs text-gold-500 font-medium tracking-wide">Floridablanca, Pampanga</span>
                     </div>
                 </div>
@@ -209,7 +241,7 @@
             <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-700">
                 <div class="flex items-center gap-3">
                     <i class="fas fa-cogs text-3xl text-gold-500 animate-spin-slow"></i>
-                    <h2 class="text-2xl font-bold font-serif text-glow">Admin Control Panel</h2>
+                    <h2 class="text-2xl font-bold font-display text-glow">Admin Control Panel</h2>
                 </div>
                 <span class="text-xs text-gray-400 bg-gray-800 px-3 py-1 rounded-full border border-gray-700"><i class="fas fa-info-circle mr-1 text-gold-500"></i> Max file size: 750KB</span>
             </div>
@@ -272,11 +304,11 @@
         </div>
         
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center reveal active">
-            <span class="text-gold-400 font-bold tracking-widest uppercase text-sm mb-4 animate-fade-in-up">Welcome to Our Church Family</span>
-            <h1 class="text-4xl md:text-6xl lg:text-7xl font-serif font-bold mb-6 leading-tight drop-shadow-lg">
-                Pentecostals of Gutad
+            <span class="text-gold-400 font-bold tracking-[0.2em] uppercase text-sm mb-6 animate-fade-in-up font-display">Welcome to Our Church Family</span>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold mb-8 leading-tight text-white uppercase text-3d-gold animate-float-minimal tracking-tight">
+                Pentecostals<br class="md:hidden"> of Gutad
             </h1>
-            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mb-10 drop-shadow-md">
+            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mb-10 drop-shadow-md font-light">
                 Experiencing the Word of God, fellowship, and spiritual growth in the heart of Pampanga.
             </p>
             <div class="flex flex-col sm:flex-row gap-4">
@@ -293,7 +325,7 @@
             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="text-center mb-16 reveal">
-                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4 text-glow">Church Announcements</h2>
+                    <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-4 text-glow">Church Announcements</h2>
                     <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full shadow-[0_0_10px_rgba(213,148,36,0.5)]"></div>
                 </div>
                 
@@ -313,7 +345,7 @@
             <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-gray-900 to-gray-800 opacity-50"></div>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="text-center mb-16 reveal">
-                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4 text-glow">Past Events & Gallery</h2>
+                    <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-4 text-glow">Past Events & Gallery</h2>
                     <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full shadow-[0_0_10px_rgba(213,148,36,0.5)]"></div>
                 </div>
 
@@ -332,7 +364,7 @@
         <section id="resources" class="py-20 bg-gray-900 relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16 reveal">
-                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4 text-glow">Word of God Materials</h2>
+                    <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-4 text-glow">Word of God Materials</h2>
                     <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full shadow-[0_0_10px_rgba(213,148,36,0.5)]"></div>
                 </div>
 
@@ -354,7 +386,7 @@
     <section id="location" class="py-20 bg-gray-800 border-t border-gray-700 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 reveal">
-                <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4 text-glow">Visit Us</h2>
+                <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-4 text-glow">Visit Us</h2>
                 <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full shadow-[0_0_10px_rgba(213,148,36,0.5)]"></div>
                 <p class="mt-4 text-gray-400">Join us for worship and fellowship.</p>
             </div>
@@ -368,7 +400,6 @@
                         scrolling="no" 
                         marginheight="0" 
                         marginwidth="0" 
-                        style="filter: grayscale(100%) invert(92%) contrast(83%);"
                         src="https://maps.google.com/maps?q=Pentecostals%20of%20Gutad%2C%20Floridablanca%2C%20Pampanga&t=&z=15&ie=UTF8&iwloc=&output=embed">
                     </iframe>
                 </div>
@@ -406,7 +437,7 @@
             <div>
                 <div class="flex items-center gap-3 mb-4">
                     <img id="footer-logo" src="https://ui-avatars.com/api/?name=PG&background=d59424&color=fff&rounded=true" alt="Church Logo" class="h-10 w-10 object-cover rounded-full">
-                    <span class="font-serif font-bold text-xl text-white">Pentecostals of Gutad</span>
+                    <span class="font-display font-bold text-xl text-white">Pentecostals of Gutad</span>
                 </div>
                 <p class="text-sm text-gray-400 mb-4">A place of worship, learning the Word of God, and growing together as a spiritual family.</p>
                 <div class="flex gap-4 mt-4">
@@ -619,11 +650,17 @@
         window.openLoginModal = function() {
             const modal = document.getElementById('login-modal');
             const content = document.getElementById('login-modal-content');
+            
             modal.classList.remove('hidden');
+            // Force reflow
+            void modal.offsetWidth;
+            
+            modal.classList.remove('opacity-0');
+            
             setTimeout(() => {
-                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.remove('scale-90', 'opacity-0');
                 content.classList.add('scale-100', 'opacity-100');
-            }, 10);
+            }, 50);
         }
 
         window.closeLoginModal = function(event) {
@@ -632,12 +669,13 @@
             const modal = document.getElementById('login-modal');
             const content = document.getElementById('login-modal-content');
             
+            modal.classList.add('opacity-0');
             content.classList.remove('scale-100', 'opacity-100');
-            content.classList.add('scale-95', 'opacity-0');
+            content.classList.add('scale-90', 'opacity-0');
             
             setTimeout(() => {
                 modal.classList.add('hidden');
-            }, 300);
+            }, 500);
         }
 
         window.handleLogout = async function() {
@@ -970,10 +1008,19 @@
         }
 
         // Modal Functions
-        window.openModal = function(item) {
+        window.openModal = function(item, type) {
             const modal = document.getElementById('post-modal');
             const content = document.getElementById('modal-content');
             
+            // Update URL for deep linking
+            if (type && item.id) {
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('view') !== type || params.get('id') !== item.id) {
+                    const newUrl = `${window.location.pathname}?view=${type}&id=${item.id}`;
+                    window.history.replaceState({ path: newUrl }, '', newUrl);
+                }
+            }
+
             document.getElementById('modal-image').src = item.image;
             
             const dateEl = document.getElementById('modal-date');
@@ -988,19 +1035,30 @@
             document.getElementById('modal-title').textContent = item.title;
             
             const bodyEl = document.getElementById('modal-body');
+            const textContainer = document.getElementById('modal-text-container');
+            
             if (item.content) {
                 bodyEl.textContent = item.content;
                 bodyEl.classList.remove('hidden');
+                textContainer.classList.remove('text-center');
+                document.getElementById('modal-date').classList.remove('justify-center');
             } else {
                 bodyEl.classList.add('hidden');
+                textContainer.classList.add('text-center');
+                document.getElementById('modal-date').classList.add('justify-center');
             }
             
             modal.classList.remove('hidden');
-            // Small delay to allow display:block to apply before adding opacity/scale classes for transition
+            // Force reflow
+            void modal.offsetWidth;
+            
+            modal.classList.remove('opacity-0');
+            
             setTimeout(() => {
-                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.remove('scale-90', 'opacity-0');
                 content.classList.add('scale-100', 'opacity-100');
-            }, 10);
+            }, 50);
+            
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
         }
 
@@ -1010,13 +1068,66 @@
             const modal = document.getElementById('post-modal');
             const content = document.getElementById('modal-content');
             
+            // Reset URL
+            const newUrl = window.location.pathname;
+            window.history.replaceState({ path: newUrl }, '', newUrl);
+
+            modal.classList.add('opacity-0');
             content.classList.remove('scale-100', 'opacity-100');
-            content.classList.add('scale-95', 'opacity-0');
+            content.classList.add('scale-90', 'opacity-0');
             
             setTimeout(() => {
                 modal.classList.add('hidden');
                 document.body.style.overflow = '';
-            }, 300);
+            }, 500);
+        }
+
+        window.shareItem = async function() {
+            const url = window.location.href;
+            const title = document.getElementById('modal-title').textContent;
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: title,
+                        text: 'Check this out from Pentecostals of Gutad!',
+                        url: url
+                    });
+                } catch (err) {
+                    console.log('Error sharing:', err);
+                }
+            } else {
+                try {
+                    await navigator.clipboard.writeText(url);
+                    window.showToast('Link copied to clipboard!');
+                } catch (err) {
+                    window.showToast('Failed to copy link.', 'error');
+                }
+            }
+        }
+
+        let initialDeepLinkHandled = false;
+        function handleDeepLink() {
+            if (initialDeepLinkHandled) return;
+            const params = new URLSearchParams(window.location.search);
+            const view = params.get('view');
+            const id = params.get('id');
+            if (!view || !id) {
+                initialDeepLinkHandled = true;
+                return;
+            }
+
+            let item = null;
+            if (view === 'announcement' && state.announcements.length > 0) {
+                item = state.announcements.find(a => a.id === id);
+            } else if (view === 'gallery' && state.gallery.length > 0) {
+                item = state.gallery.find(g => g.id === id);
+            }
+
+            if (item) {
+                openModal(item, view);
+                initialDeepLinkHandled = true;
+            }
         }
 
         // Render Functions
@@ -1057,7 +1168,7 @@
                 const pinnedBadge = ann.isPinned ? `<div class="absolute top-4 left-4 bg-gold-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md z-10"><i class="fas fa-thumbtack mr-1"></i> Pinned</div>` : '';
 
                 grid.innerHTML += `
-                    <div onclick="openModal(${safeAnn})" class="bg-gray-800 rounded-3xl shadow-lg hover:shadow-2xl hover:shadow-gold-500/10 transition-all duration-300 break-inside-avoid overflow-hidden relative group cursor-pointer transform hover:-translate-y-2 border border-gray-700 ${ann.isPinned ? 'ring-2 ring-gold-500/50 shadow-gold-500/20' : ''}">
+                    <div onclick="openModal(${safeAnn}, 'announcement')" class="bg-gray-800 rounded-3xl shadow-lg hover:shadow-2xl hover:shadow-gold-500/10 transition-all duration-300 break-inside-avoid overflow-hidden relative group cursor-pointer transform hover:-translate-y-2 border border-gray-700 ${ann.isPinned ? 'ring-2 ring-gold-500/50 shadow-gold-500/20' : ''}">
                         ${adminControls}
                         ${pinnedBadge}
                         <div class="relative overflow-hidden">
@@ -1076,6 +1187,7 @@
                         </div>
                     </div>`;
             });
+            handleDeepLink();
         }
 
         function renderGallery() {
@@ -1095,7 +1207,7 @@
             state.gallery.forEach(item => {
                 const safeItem = JSON.stringify(item).replace(/"/g, '&quot;');
                 grid.innerHTML += `
-                    <div onclick="openModal(${safeItem})" class="relative group break-inside-avoid rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-gold-500/20 transition-all duration-500 cursor-pointer border border-gray-700">
+                    <div onclick="openModal(${safeItem}, 'gallery')" class="relative group break-inside-avoid rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-gold-500/20 transition-all duration-500 cursor-pointer border border-gray-700">
                         <img src="${item.image}" alt="${item.title}" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                             <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
@@ -1105,6 +1217,7 @@
                         </div>
                     </div>`;
             });
+            handleDeepLink();
         }
 
         function renderResources() {
