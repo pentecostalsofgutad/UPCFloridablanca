@@ -389,19 +389,35 @@
         <!-- Resources Section -->
         <section id="resources" class="py-20 bg-gray-900 relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16 reveal">
+                <div class="text-center mb-10 reveal">
                     <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-4 text-glow">Word of God Materials</h2>
-                    <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full shadow-[0_0_10px_rgba(213,148,36,0.5)]"></div>
+                    <div class="w-24 h-1 bg-gold-500 mx-auto rounded-full shadow-[0_0_10px_rgba(213,148,36,0.5)] mb-6"></div>
+                    <p class="text-gray-400 text-sm max-w-2xl mx-auto italic leading-relaxed">
+                        Materials are from the <span class="text-gold-500 font-semibold">Division of Multicultural Ministries of the United Pentecostal Church</span> and the <span class="text-gold-500 font-semibold">local UPC in Central Luzon, Philippines</span>.
+                    </p>
                 </div>
 
                 <div class="max-w-4xl mx-auto reveal delay-100">
+                    <!-- Search Bar -->
+                    <div class="mb-8 relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-500 group-focus-within:text-gold-500 transition-colors"></i>
+                        </div>
+                        <input type="text" id="resource-search" placeholder="Search topics or titles..." class="w-full bg-gray-800/50 border border-gray-700 text-gray-300 text-sm rounded-xl focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500 block w-full pl-10 p-4 transition-all placeholder-gray-500 backdrop-blur-sm" oninput="renderResources()">
+                    </div>
+
                     <div id="resources-list" class="space-y-4">
                         <!-- Populated by JS -->
                     </div>
                     
-                    <div id="no-resources" class="text-center text-gray-400 py-10 bg-gray-800/50 rounded-xl border border-dashed border-gray-700 backdrop-blur-sm">
+                    <div id="no-resources" class="text-center text-gray-400 py-10 bg-gray-800/50 rounded-xl border border-dashed border-gray-700 backdrop-blur-sm hidden">
                         <i class="fas fa-circle-notch fa-spin text-4xl mb-3 text-gold-500"></i>
                         <p>Loading materials...</p>
+                    </div>
+                    
+                    <div id="empty-search" class="text-center text-gray-400 py-10 hidden">
+                        <i class="fas fa-search text-4xl mb-3 text-gray-600"></i>
+                        <p>No materials found matching your search.</p>
                     </div>
                 </div>
             </div>
@@ -1246,40 +1262,96 @@
             handleDeepLink();
         }
 
+        // Helper to view PDF in new window for Data URLs
+        window.viewPdf = function(id) {
+            const res = state.resources.find(r => r.id === id);
+            if (!res) return;
+            
+            const win = window.open();
+            if (win) {
+                const title = res.title || 'PDF Viewer';
+                win.document.write(`
+                    <html>
+                        <head><title>${title}</title><style>body{margin:0;background:#333;height:100vh;display:flex;justify-content:center;align-items:center;}</style></head>
+                        <body>
+                            <iframe src="${res.file}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>
+                        </body>
+                    </html>
+                `);
+            } else {
+                window.showToast('Please allow popups to view the PDF.', 'error');
+            }
+        }
+
         function renderResources() {
             const list = document.getElementById('resources-list');
             const emptyState = document.getElementById('no-resources');
+            const emptySearch = document.getElementById('empty-search');
+            const searchTerm = document.getElementById('resource-search') ? document.getElementById('resource-search').value.toLowerCase() : '';
+            
             list.innerHTML = '';
 
             if (state.resources.length === 0) {
                 list.classList.add('hidden');
                 emptyState.classList.remove('hidden');
-                emptyState.innerHTML = `<i class="fas fa-file-pdf text-4xl mb-3 text-gray-300"></i><p>No materials available for download yet.</p>`;
+                emptyState.innerHTML = `<i class="fas fa-file-pdf text-4xl mb-3 text-gray-300"></i><p>No materials available yet.</p>`;
+                if (emptySearch) emptySearch.classList.add('hidden');
                 return;
             }
+
+            const filteredResources = state.resources.filter(res => 
+                res.title.toLowerCase().includes(searchTerm)
+            );
+
+            if (filteredResources.length === 0) {
+                list.classList.add('hidden');
+                emptyState.classList.add('hidden');
+                if (emptySearch) emptySearch.classList.remove('hidden');
+                return;
+            }
+
             list.classList.remove('hidden');
             emptyState.classList.add('hidden');
+            if (emptySearch) emptySearch.classList.add('hidden');
 
-            state.resources.forEach(res => {
+            filteredResources.forEach(res => {
                 const isDataUrl = res.file.startsWith('data:');
-                const actionText = isDataUrl ? 'Download' : 'Open Link';
-                const actionIcon = isDataUrl ? 'fa-download' : 'fa-external-link-alt';
-                const downloadAttr = isDataUrl ? `download="${res.title}.pdf"` : 'target="_blank"';
+                
+                let buttonsHtml = '';
+                
+                if (isDataUrl) {
+                    // For uploaded files: View (new tab) and Download
+                    buttonsHtml = `
+                        <div class="flex gap-2">
+                            <button onclick="viewPdf('${res.id}')" class="bg-gray-700 border border-gray-600 hover:bg-gold-600 hover:border-gold-500 hover:text-white text-gray-300 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-2 group/btn" title="View PDF">
+                                <i class="fas fa-eye group-hover/btn:scale-110 transition-transform"></i> <span class="hidden sm:inline">View</span>
+                            </button>
+                            <a href="${res.file}" download="${res.title}.pdf" class="bg-gray-700 border border-gray-600 hover:bg-gold-600 hover:border-gold-500 hover:text-white text-gray-300 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-2 group/btn" title="Download PDF">
+                                <i class="fas fa-download group-hover/btn:animate-bounce"></i> <span class="hidden sm:inline">Download</span>
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    // For external links: Open Link
+                    buttonsHtml = `
+                        <a href="${res.file}" target="_blank" class="bg-gray-700 border border-gray-600 hover:bg-gold-600 hover:border-gold-500 hover:text-white text-gray-300 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-2 group/btn">
+                            <i class="fas fa-external-link-alt group-hover/btn:scale-110 transition-transform"></i> <span class="hidden sm:inline">Open Link</span>
+                        </a>
+                    `;
+                }
 
                 list.innerHTML += `
-                    <div class="flex items-center justify-between p-5 bg-gray-800 hover:bg-gray-750 border border-gray-700 hover:border-gold-500/50 rounded-xl transition-all duration-300 group hover:shadow-lg hover:shadow-gold-500/10 hover:-translate-y-1">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-5 bg-gray-800 hover:bg-gray-750 border border-gray-700 hover:border-gold-500/50 rounded-xl transition-all duration-300 group hover:shadow-lg hover:shadow-gold-500/10 hover:-translate-y-1 gap-4">
                         <div class="flex items-center gap-4">
-                            <div class="h-12 w-12 bg-gray-700 rounded-full shadow-inner flex items-center justify-center text-red-400 group-hover:text-gold-500 group-hover:scale-110 transition-all duration-300">
+                            <div class="h-12 w-12 bg-gray-700 rounded-full shadow-inner flex items-center justify-center text-red-400 group-hover:text-gold-500 group-hover:scale-110 transition-all duration-300 flex-shrink-0">
                                 <i class="fas fa-file-pdf text-xl"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-100 group-hover:text-gold-400 transition-colors">${res.title}</h4>
+                                <h4 class="font-bold text-gray-100 group-hover:text-gold-400 transition-colors line-clamp-1">${res.title}</h4>
                                 <p class="text-xs text-gray-400 mt-1">PDF Document • ${res.size}</p>
                             </div>
                         </div>
-                        <a href="${res.file}" ${downloadAttr} class="bg-gray-700 border border-gray-600 hover:bg-gold-600 hover:border-gold-500 hover:text-white text-gray-300 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-2 group/btn">
-                            <i class="fas ${actionIcon} group-hover/btn:animate-bounce"></i> <span class="hidden sm:inline">${actionText}</span>
-                        </a>
+                        ${buttonsHtml}
                     </div>`;
             });
         }
