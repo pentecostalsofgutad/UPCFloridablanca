@@ -347,8 +347,55 @@
 
     <!-- Main Content Area -->
     <main class="flex-grow bg-gray-900">
+        <!-- Welcome Section -->
+        <section id="welcome" class="py-24 bg-gray-900 relative border-b border-gray-800 overflow-hidden">
+            <!-- Decorative Background Element -->
+            <div class="absolute inset-0 z-0 opacity-10">
+                <img src="https://images.unsplash.com/photo-1548625361-195fe5772df8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="Background Texture" class="w-full h-full object-cover">
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-transparent to-gray-900 z-0"></div>
+
+            <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gold-500/10 text-gold-500 mb-8 border border-gold-500/20 shadow-lg shadow-gold-500/5 backdrop-blur-sm">
+                    <i class="fas fa-heart text-3xl animate-pulse-slow"></i>
+                </div>
+                <h2 class="text-4xl md:text-6xl font-display font-bold text-white mb-6 text-glow uppercase tracking-tight">A Warm Welcome to You</h2>
+                <p class="text-xl md:text-3xl text-gold-500/90 leading-relaxed mb-8 font-display font-medium italic">
+                    "Come, let us worship and bow down..."
+                </p>
+                <p class="text-gray-300 text-lg md:text-xl leading-relaxed mb-10 max-w-3xl mx-auto font-light">
+                    We invite you to experience the presence of God with us. Whether you are searching for a spiritual home or just visiting, our doors and hearts are open. Come and join our church family as we worship the Lord together in spirit and in truth.
+                </p>
+                
+                <!-- Service Times Highlight -->
+                <div class="inline-block bg-gray-800/50 backdrop-blur-md border border-gray-700 rounded-2xl p-6 mb-10 shadow-xl">
+                    <p class="text-gold-500 font-bold uppercase tracking-widest text-xs mb-2">Join us this week</p>
+                    <div class="flex items-center justify-center gap-4 text-white">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-calendar-day text-gold-500"></i>
+                            <span class="font-bold">Sunday Service</span>
+                        </div>
+                        <div class="w-px h-4 bg-gray-600"></div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-clock text-gold-500"></i>
+                            <span class="font-bold">9:00 AM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#location" class="inline-flex items-center justify-center gap-3 bg-gold-600 hover:bg-gold-500 text-white font-bold py-4 px-12 rounded-full transition-all shadow-lg shadow-gold-600/20 hover:shadow-gold-500/40 hover:-translate-y-1 group w-full sm:w-auto">
+                        <i class="fas fa-church group-hover:scale-110 transition-transform"></i> Join Our Worship
+                    </a>
+                    <a href="#community" class="inline-flex items-center justify-center gap-3 bg-white/5 hover:bg-white/10 text-white font-bold py-4 px-12 rounded-full transition-all border border-white/10 hover:border-white/20 w-full sm:w-auto">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+        </section>
+
         <!-- About UPCI Section -->
-        <section id="about-upci" class="py-16 bg-gray-900 relative border-b border-gray-800">
+        <section id="about-upci" class="py-16 bg-gray-800/50 relative border-b border-gray-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="glass-panel rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 reveal hover:border-gold-500/30 transition-colors duration-500">
                     <div class="w-full md:w-1/3 flex justify-center">
