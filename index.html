@@ -284,7 +284,7 @@
                     <input type="file" id="gal-img" accept="image/png, image/jpeg" multiple class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-700 file:text-white file:hover:bg-gray-600 mb-2 cursor-pointer">
                     <div class="text-center text-xs text-gray-500 mb-2">- OR -</div>
                     <input type="text" id="gal-url" placeholder="Paste Google Drive / Image Link" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none text-sm transition-colors placeholder-gray-500">
-                    <button onclick="postGallery()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto shadow-lg shadow-gold-600/20 hover:shadow-gold-600/40 transform hover:-translate-y-0.5">Upload Photo</button>
+                    <button id="post-gal-btn" onclick="postGallery()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto shadow-lg shadow-gold-600/20 hover:shadow-gold-600/40 transform hover:-translate-y-0.5">Upload Photo</button>
                 </div>
 
                 <!-- Add Church Goal -->
@@ -292,7 +292,7 @@
                     <h3 class="text-lg font-semibold text-gold-400 mb-4 flex items-center"><i class="fas fa-bullseye mr-2"></i>Add Church Goal</h3>
                     <input type="text" id="goal-title" placeholder="Goal Title" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none transition-colors placeholder-gray-500">
                     <textarea id="goal-desc" placeholder="Goal Description..." rows="2" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none transition-colors placeholder-gray-500"></textarea>
-                    <button onclick="addChurchGoal()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto shadow-lg shadow-gold-600/20 hover:shadow-gold-600/40 transform hover:-translate-y-0.5">Add Goal</button>
+                    <button id="post-goal-btn" onclick="addChurchGoal()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto shadow-lg shadow-gold-600/20 hover:shadow-gold-600/40 transform hover:-translate-y-0.5">Add Goal</button>
                 </div>
 
                 <!-- Manage Requests -->
@@ -316,7 +316,7 @@
                     <input type="file" id="pdf-file" accept=".pdf" class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-700 file:text-white file:hover:bg-gray-600 mb-2 cursor-pointer">
                     <div class="text-center text-xs text-gray-500 mb-2">- OR -</div>
                     <input type="text" id="pdf-url" placeholder="Paste Google Drive / File Link" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none text-sm transition-colors placeholder-gray-500">
-                    <button onclick="uploadPDF()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto shadow-lg shadow-gold-600/20 hover:shadow-gold-600/40 transform hover:-translate-y-0.5">Upload PDF</button>
+                    <button id="post-pdf-btn" onclick="uploadPDF()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto shadow-lg shadow-gold-600/20 hover:shadow-gold-600/40 transform hover:-translate-y-0.5">Upload PDF</button>
                 </div>
             </div>
         </div>
@@ -527,8 +527,8 @@
                                 <input type="text" id="pr-for" placeholder="Prayer for who? (Optional)" class="w-full bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-700 focus:border-gold-500 outline-none transition-colors">
                                 <textarea id="pr-details" placeholder="Prayer details..." rows="3" class="w-full bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-700 focus:border-gold-500 outline-none transition-colors"></textarea>
                                 <div class="flex gap-3">
-                                    <button onclick="submitPrayerRequest()" class="flex-1 bg-gold-600 hover:bg-gold-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-gold-600/20">Submit</button>
-                                    <button onclick="toggleForm('prayer-form')" class="px-6 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all">Cancel</button>
+                                    <button id="submit-pr-btn" onclick="submitPrayerRequest()" class="flex-1 bg-gold-600 hover:bg-gold-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-gold-600/20">Submit</button>
+                                    <button id="cancel-pr-btn" onclick="toggleForm('prayer-form')" class="px-6 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all">Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -560,8 +560,8 @@
                                 <input type="text" id="test-name" placeholder="Your Name" class="w-full bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-700 focus:border-gold-500 outline-none transition-colors">
                                 <textarea id="test-details" placeholder="Your testimony..." rows="4" class="w-full bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-700 focus:border-gold-500 outline-none transition-colors"></textarea>
                                 <div class="flex gap-3">
-                                    <button onclick="submitTestimony()" class="flex-1 bg-gold-600 hover:bg-gold-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-gold-600/20">Submit</button>
-                                    <button onclick="toggleForm('testimony-form')" class="px-6 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all">Cancel</button>
+                                    <button id="submit-test-btn" onclick="submitTestimony()" class="flex-1 bg-gold-600 hover:bg-gold-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-gold-600/20">Submit</button>
+                                    <button id="cancel-test-btn" onclick="toggleForm('testimony-form')" class="px-6 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all">Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -771,6 +771,11 @@
         let state = {
             isAdmin: false,
             editingAnnouncementId: null,
+            editingGoalId: null,
+            editingGalleryId: null,
+            editingResourceId: null,
+            editingPrayerId: null,
+            editingTestimonyId: null,
             announcements: [],
             gallery: [],
             resources: [],
@@ -1212,6 +1217,347 @@
             }
         }
 
+        window.editChurchGoal = function(id) {
+            const goal = state.goals.find(g => g.id === id);
+            if (!goal) return;
+
+            document.getElementById('goal-title').value = goal.title;
+            document.getElementById('goal-desc').value = goal.description;
+            state.editingGoalId = id;
+
+            const btn = document.getElementById('post-goal-btn');
+            btn.textContent = 'Update Goal';
+            btn.onclick = window.updateChurchGoal;
+
+            let cancelBtn = document.getElementById('cancel-goal-btn');
+            if (!cancelBtn) {
+                cancelBtn = document.createElement('button');
+                cancelBtn.id = 'cancel-goal-btn';
+                cancelBtn.className = 'w-full bg-gray-600 hover:bg-gray-700 text-white py-2 rounded-lg transition mt-2';
+                cancelBtn.textContent = 'Cancel Edit';
+                cancelBtn.onclick = window.cancelEditGoal;
+                btn.parentNode.insertBefore(cancelBtn, btn.nextSibling);
+            } else {
+                cancelBtn.classList.remove('hidden');
+            }
+            document.getElementById('admin-dashboard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.cancelEditGoal = function() {
+            state.editingGoalId = null;
+            document.getElementById('goal-title').value = '';
+            document.getElementById('goal-desc').value = '';
+            const btn = document.getElementById('post-goal-btn');
+            btn.textContent = 'Add Goal';
+            btn.onclick = window.addChurchGoal;
+            const cancelBtn = document.getElementById('cancel-goal-btn');
+            if (cancelBtn) cancelBtn.classList.add('hidden');
+        }
+
+        window.updateChurchGoal = async function() {
+            if (!state.isAdmin || !state.editingGoalId) return;
+            const title = document.getElementById('goal-title').value.trim();
+            const description = document.getElementById('goal-desc').value.trim();
+
+            if (!title || !description) return window.showToast('Fill all fields.', 'error');
+
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'goals', state.editingGoalId), {
+                    title, description
+                });
+                window.cancelEditGoal();
+                window.showToast('Church goal updated!');
+            } catch (e) {
+                window.showToast('Error updating goal.', 'error');
+            }
+        }
+
+        window.deleteGalleryItem = async function(id) {
+            if (!state.isAdmin || !confirm('Delete this photo?')) return;
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gallery', id));
+                window.showToast('Photo deleted.');
+            } catch (e) {
+                window.showToast('Error deleting photo.', 'error');
+            }
+        }
+
+        window.editGalleryItem = function(id) {
+            const item = state.gallery.find(g => g.id === id);
+            if (!item) return;
+
+            document.getElementById('gal-title').value = item.title;
+            if (item.date) {
+                // Convert MM/DD/YYYY to YYYY-MM-DD for input[type="date"]
+                const parts = item.date.split('/');
+                if (parts.length === 3) {
+                    document.getElementById('gal-date').value = `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
+                }
+            }
+            document.getElementById('gal-place').value = item.place || '';
+            if (item.image && (item.image.includes('http') || item.image.includes('drive.google.com'))) {
+                document.getElementById('gal-url').value = item.image;
+            }
+            
+            state.editingGalleryId = id;
+
+            const btn = document.getElementById('post-gal-btn');
+            btn.textContent = 'Update Photo';
+            btn.onclick = window.updateGalleryItem;
+
+            let cancelBtn = document.getElementById('cancel-gal-btn');
+            if (!cancelBtn) {
+                cancelBtn = document.createElement('button');
+                cancelBtn.id = 'cancel-gal-btn';
+                cancelBtn.className = 'w-full bg-gray-600 hover:bg-gray-700 text-white py-2 rounded-lg transition mt-2';
+                cancelBtn.textContent = 'Cancel Edit';
+                cancelBtn.onclick = window.cancelEditGallery;
+                btn.parentNode.insertBefore(cancelBtn, btn.nextSibling);
+            } else {
+                cancelBtn.classList.remove('hidden');
+            }
+            document.getElementById('admin-dashboard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.cancelEditGallery = function() {
+            state.editingGalleryId = null;
+            document.getElementById('gal-title').value = '';
+            document.getElementById('gal-date').value = '';
+            document.getElementById('gal-place').value = '';
+            document.getElementById('gal-url').value = '';
+            document.getElementById('gal-img').value = '';
+            const btn = document.getElementById('post-gal-btn');
+            btn.textContent = 'Upload Photo';
+            btn.onclick = window.postGallery;
+            const cancelBtn = document.getElementById('cancel-gal-btn');
+            if (cancelBtn) cancelBtn.classList.add('hidden');
+        }
+
+        window.updateGalleryItem = async function() {
+            if (!state.isAdmin || !state.editingGalleryId) return;
+            const title = document.getElementById('gal-title').value.trim();
+            const date = document.getElementById('gal-date').value;
+            const place = document.getElementById('gal-place').value.trim();
+            const fileInput = document.getElementById('gal-img');
+            const urlInput = document.getElementById('gal-url').value.trim();
+
+            if (!title) return window.showToast('Title is required.', 'error');
+
+            try {
+                const updateData = {
+                    title,
+                    date: date ? new Date(date).toLocaleDateString() : null,
+                    place: place || null
+                };
+
+                if (urlInput) {
+                    updateData.image = window.processDriveLink(urlInput);
+                } else if (fileInput.files.length > 0) {
+                    updateData.image = await window.getBase64(fileInput.files[0]);
+                }
+
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gallery', state.editingGalleryId), updateData);
+                window.cancelEditGallery();
+                window.showToast('Gallery item updated!');
+            } catch (e) {
+                window.showToast('Error updating gallery item.', 'error');
+            }
+        }
+
+        window.deleteResource = async function(id) {
+            if (!state.isAdmin || !confirm('Delete this material?')) return;
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'resources', id));
+                window.showToast('Material deleted.');
+            } catch (e) {
+                window.showToast('Error deleting material.', 'error');
+            }
+        }
+
+        window.editResource = function(id) {
+            const res = state.resources.find(r => r.id === id);
+            if (!res) return;
+
+            document.getElementById('pdf-title').value = res.title;
+            if (res.file && (res.file.includes('http') || res.file.includes('drive.google.com'))) {
+                document.getElementById('pdf-url').value = res.file;
+            }
+            
+            state.editingResourceId = id;
+
+            const btn = document.getElementById('post-pdf-btn');
+            btn.textContent = 'Update Material';
+            btn.onclick = window.updateResource;
+
+            let cancelBtn = document.getElementById('cancel-pdf-btn');
+            if (!cancelBtn) {
+                cancelBtn = document.createElement('button');
+                cancelBtn.id = 'cancel-pdf-btn';
+                cancelBtn.className = 'w-full bg-gray-600 hover:bg-gray-700 text-white py-2 rounded-lg transition mt-2';
+                cancelBtn.textContent = 'Cancel Edit';
+                cancelBtn.onclick = window.cancelEditResource;
+                btn.parentNode.insertBefore(cancelBtn, btn.nextSibling);
+            } else {
+                cancelBtn.classList.remove('hidden');
+            }
+            document.getElementById('admin-dashboard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.cancelEditResource = function() {
+            state.editingResourceId = null;
+            document.getElementById('pdf-title').value = '';
+            document.getElementById('pdf-url').value = '';
+            document.getElementById('pdf-file').value = '';
+            const btn = document.getElementById('post-pdf-btn');
+            btn.textContent = 'Upload PDF';
+            btn.onclick = window.uploadPDF;
+            const cancelBtn = document.getElementById('cancel-pdf-btn');
+            if (cancelBtn) cancelBtn.classList.add('hidden');
+        }
+
+        window.updateResource = async function() {
+            if (!state.isAdmin || !state.editingResourceId) return;
+            const title = document.getElementById('pdf-title').value.trim();
+            const fileInput = document.getElementById('pdf-file');
+            const urlInput = document.getElementById('pdf-url').value.trim();
+
+            if (!title) return window.showToast('Title is required.', 'error');
+
+            try {
+                const updateData = { title };
+
+                if (urlInput) {
+                    updateData.file = urlInput;
+                    updateData.size = 'External Link';
+                } else if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    updateData.file = await window.getBase64(file);
+                    updateData.size = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+                }
+
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'resources', state.editingResourceId), updateData);
+                window.cancelEditResource();
+                window.showToast('Material updated!');
+            } catch (e) {
+                window.showToast('Error updating material.', 'error');
+            }
+        }
+
+        window.editPrayerRequest = function(id) {
+            const req = state.prayerRequests.find(r => r.id === id);
+            if (!req) return;
+
+            document.getElementById('pr-name').value = req.name;
+            document.getElementById('pr-for').value = req.forWho || '';
+            document.getElementById('pr-details').value = req.details;
+            
+            state.editingPrayerId = id;
+            
+            const btn = document.getElementById('submit-pr-btn');
+            btn.textContent = 'Update Request';
+            btn.onclick = window.updatePrayerRequest;
+            
+            const cancelBtn = document.getElementById('cancel-pr-btn');
+            cancelBtn.textContent = 'Cancel Edit';
+            cancelBtn.onclick = window.cancelEditPrayerRequest;
+            
+            const form = document.getElementById('prayer-form');
+            form.classList.remove('hidden');
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        window.cancelEditPrayerRequest = function() {
+            state.editingPrayerId = null;
+            document.getElementById('pr-name').value = '';
+            document.getElementById('pr-for').value = '';
+            document.getElementById('pr-details').value = '';
+            
+            const btn = document.getElementById('submit-pr-btn');
+            btn.textContent = 'Submit';
+            btn.onclick = window.submitPrayerRequest;
+            
+            const cancelBtn = document.getElementById('cancel-pr-btn');
+            cancelBtn.textContent = 'Cancel';
+            cancelBtn.onclick = () => window.toggleForm('prayer-form');
+            
+            window.toggleForm('prayer-form');
+        }
+
+        window.updatePrayerRequest = async function() {
+            if (!state.isAdmin || !state.editingPrayerId) return;
+            const name = document.getElementById('pr-name').value.trim();
+            const forWho = document.getElementById('pr-for').value.trim();
+            const details = document.getElementById('pr-details').value.trim();
+
+            if (!name || !details) return window.showToast('Name and details are required.', 'error');
+
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'prayer_requests', state.editingPrayerId), {
+                    name, forWho, details
+                });
+                window.cancelEditPrayerRequest();
+                window.showToast('Prayer request updated!');
+            } catch (e) {
+                window.showToast('Error updating request.', 'error');
+            }
+        }
+
+        window.editTestimony = function(id) {
+            const test = state.testimonies.find(t => t.id === id);
+            if (!test) return;
+
+            document.getElementById('test-name').value = test.name;
+            document.getElementById('test-details').value = test.details;
+            
+            state.editingTestimonyId = id;
+            
+            const btn = document.getElementById('submit-test-btn');
+            btn.textContent = 'Update Testimony';
+            btn.onclick = window.updateTestimony;
+            
+            const cancelBtn = document.getElementById('cancel-test-btn');
+            cancelBtn.textContent = 'Cancel Edit';
+            cancelBtn.onclick = window.cancelEditTestimony;
+            
+            const form = document.getElementById('testimony-form');
+            form.classList.remove('hidden');
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        window.cancelEditTestimony = function() {
+            state.editingTestimonyId = null;
+            document.getElementById('test-name').value = '';
+            document.getElementById('test-details').value = '';
+            
+            const btn = document.getElementById('submit-test-btn');
+            btn.textContent = 'Submit';
+            btn.onclick = window.submitTestimony;
+            
+            const cancelBtn = document.getElementById('cancel-test-btn');
+            cancelBtn.textContent = 'Cancel';
+            cancelBtn.onclick = () => window.toggleForm('testimony-form');
+            
+            window.toggleForm('testimony-form');
+        }
+
+        window.updateTestimony = async function() {
+            if (!state.isAdmin || !state.editingTestimonyId) return;
+            const name = document.getElementById('test-name').value.trim();
+            const details = document.getElementById('test-details').value.trim();
+
+            if (!name || !details) return window.showToast('Name and details are required.', 'error');
+
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'testimonies', state.editingTestimonyId), {
+                    name, details
+                });
+                window.cancelEditTestimony();
+                window.showToast('Testimony updated!');
+            } catch (e) {
+                window.showToast('Error updating testimony.', 'error');
+            }
+        }
+
         window.submitPrayerRequest = async function() {
             const name = document.getElementById('pr-name').value.trim();
             const forWho = document.getElementById('pr-for').value.trim();
@@ -1310,7 +1656,11 @@
             empty.classList.add('hidden');
 
             state.goals.forEach(goal => {
-                const adminBtn = state.isAdmin ? `<button onclick="deleteChurchGoal('${goal.id}')" class="absolute top-2 right-2 text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fas fa-trash-alt"></i></button>` : '';
+                const adminBtn = state.isAdmin ? `
+                    <div class="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="editChurchGoal('${goal.id}')" class="text-blue-500 hover:text-blue-400" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteChurchGoal('${goal.id}')" class="text-red-500 hover:text-red-400" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                    </div>` : '';
                 container.innerHTML += `
                     <div class="glass-panel p-6 rounded-xl relative group hover:border-gold-500/30 transition-all">
                         ${adminBtn}
@@ -1336,6 +1686,12 @@
 
             approved.forEach(req => {
                 const forWho = req.forWho ? `<span class="text-gold-500/80 text-xs block mb-1">Prayer for: ${req.forWho}</span>` : '';
+                const adminControls = state.isAdmin ? `
+                    <div class="flex gap-3 mt-3 pt-3 border-t border-gray-700">
+                        <button onclick="editPrayerRequest('${req.id}')" class="text-blue-500 hover:text-blue-400 text-xs font-bold flex items-center gap-1"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="deleteRequest('${req.id}', 'prayer')" class="text-red-500 hover:text-red-400 text-xs font-bold flex items-center gap-1"><i class="fas fa-trash-alt"></i> Delete</button>
+                    </div>
+                ` : '';
                 list.innerHTML += `
                     <div class="bg-gray-800/50 p-5 rounded-2xl border border-gray-700 hover:border-gold-500/30 transition-all">
                         <div class="flex items-center gap-3 mb-2">
@@ -1346,6 +1702,7 @@
                         </div>
                         ${forWho}
                         <p class="text-gray-300 text-sm italic leading-relaxed">"${req.details}"</p>
+                        ${adminControls}
                     </div>
                 `;
             });
@@ -1365,6 +1722,12 @@
             empty.classList.add('hidden');
 
             approved.forEach(test => {
+                const adminControls = state.isAdmin ? `
+                    <div class="flex gap-3 mt-4 pt-3 border-t border-gray-700 relative z-20">
+                        <button onclick="editTestimony('${test.id}')" class="text-blue-500 hover:text-blue-400 text-xs font-bold flex items-center gap-1"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="deleteRequest('${test.id}', 'testimony')" class="text-red-500 hover:text-red-400 text-xs font-bold flex items-center gap-1"><i class="fas fa-trash-alt"></i> Delete</button>
+                    </div>
+                ` : '';
                 list.innerHTML += `
                     <div class="bg-gray-800/50 p-6 rounded-2xl border border-gray-700 hover:border-gold-500/30 transition-all relative">
                         <i class="fas fa-quote-left absolute top-4 left-4 text-gold-500/10 text-4xl"></i>
@@ -1375,6 +1738,7 @@
                             <span class="text-white font-bold">${test.name}</span>
                         </div>
                         <p class="text-gray-300 text-sm leading-relaxed relative z-10">"${test.details}"</p>
+                        ${adminControls}
                     </div>
                 `;
             });
@@ -1740,8 +2104,19 @@
                 const dateHtml = item.date ? `<span class="text-[10px] text-gold-500 font-bold uppercase tracking-wider block mb-1"><i class="far fa-calendar-alt mr-1"></i> ${item.date}</span>` : '';
                 const placeHtml = item.place ? `<span class="text-[10px] text-gray-400 block"><i class="fas fa-map-marker-alt mr-1"></i> ${item.place}</span>` : '';
                 
+                let adminControls = '';
+                if (state.isAdmin) {
+                    adminControls = `
+                        <div class="absolute top-2 right-2 flex gap-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" onclick="event.stopPropagation()">
+                            <button onclick="editGalleryItem('${item.id}')" class="bg-blue-600 text-white w-7 h-7 rounded-full shadow-lg hover:bg-blue-700 transition flex items-center justify-center border border-blue-500" title="Edit"><i class="fas fa-edit text-[10px]"></i></button>
+                            <button onclick="deleteGalleryItem('${item.id}')" class="bg-red-600 text-white w-7 h-7 rounded-full shadow-lg hover:bg-red-700 transition flex items-center justify-center border border-red-500" title="Delete"><i class="fas fa-trash text-[10px]"></i></button>
+                        </div>
+                    `;
+                }
+
                 grid.innerHTML += `
                     <div onclick="openModal(${safeItem}, 'gallery')" class="relative group break-inside-avoid rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-gold-500/20 transition-all duration-500 cursor-pointer border border-gray-700">
+                        ${adminControls}
                         <img src="${item.image}" alt="${item.title}" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                             <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 w-full">
@@ -1834,6 +2209,16 @@
                     `;
                 }
 
+                let adminControls = '';
+                if (state.isAdmin) {
+                    adminControls = `
+                        <div class="flex gap-2 ml-2">
+                            <button onclick="editResource('${res.id}')" class="text-blue-500 hover:text-blue-400 p-2" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteResource('${res.id}')" class="text-red-500 hover:text-red-400 p-2" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    `;
+                }
+
                 list.innerHTML += `
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between p-5 bg-gray-800 hover:bg-gray-750 border border-gray-700 hover:border-gold-500/50 rounded-xl transition-all duration-300 group hover:shadow-lg hover:shadow-gold-500/10 hover:-translate-y-1 gap-4">
                         <div class="flex items-center gap-4">
@@ -1845,7 +2230,10 @@
                                 <p class="text-xs text-gray-400 mt-1">PDF Document • ${res.size}</p>
                             </div>
                         </div>
-                        ${buttonsHtml}
+                        <div class="flex items-center">
+                            ${buttonsHtml}
+                            ${adminControls}
+                        </div>
                     </div>`;
             });
         }
