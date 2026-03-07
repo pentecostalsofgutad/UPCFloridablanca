@@ -211,10 +211,11 @@
                 </div>
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="#home" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Home</a>
+                    <a href="#goals" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Goals</a>
                     <a href="#announcements" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Announcements</a>
-                    <a href="#events" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Events & Gallery</a>
+                    <a href="#community" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Community</a>
+                    <a href="#events" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Gallery</a>
                     <a href="#resources" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Resources</a>
-                    <a href="#location" class="text-gray-300 hover:text-gold-400 font-medium transition-all hover:scale-105 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-gold-500 after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Location</a>
                 </div>
                 <!-- Mobile menu button -->
                 <div class="md:hidden flex items-center">
@@ -227,10 +228,11 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-gray-800 border-t border-gray-700 px-4 pt-2 pb-4 space-y-1 shadow-lg">
             <a href="#home" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Home</a>
+            <a href="#goals" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Goals</a>
             <a href="#announcements" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Announcements</a>
-            <a href="#events" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Events & Gallery</a>
+            <a href="#community" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Community</a>
+            <a href="#events" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Gallery</a>
             <a href="#resources" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Resources</a>
-            <a href="#location" class="block px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-gold-400 rounded-md transition-colors" onclick="toggleMobileMenu()">Location</a>
         </div>
     </nav>
 
@@ -274,11 +276,36 @@
                 <div class="glass-panel p-6 rounded-xl flex flex-col hover:border-gold-500/50 transition-colors duration-300">
                     <h3 class="text-lg font-semibold text-gold-400 mb-4 flex items-center"><i class="fas fa-camera mr-2"></i>Add to Gallery</h3>
                     <input type="text" id="gal-title" placeholder="Event Title / Description" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none transition-colors placeholder-gray-500">
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <input type="date" id="gal-date" class="bg-gray-800/50 text-white px-3 py-2 rounded border border-gray-600 focus:border-gold-500 outline-none transition-colors text-sm">
+                        <input type="text" id="gal-place" placeholder="Place (Optional)" class="bg-gray-800/50 text-white px-3 py-2 rounded border border-gray-600 focus:border-gold-500 outline-none transition-colors text-sm placeholder-gray-500">
+                    </div>
                     <label class="block text-xs text-gray-400 mb-1">Event Photo(s) (Max 750KB each, PNG/JPG)</label>
                     <input type="file" id="gal-img" accept="image/png, image/jpeg" multiple class="w-full text-sm text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-700 file:text-white file:hover:bg-gray-600 mb-2 cursor-pointer">
                     <div class="text-center text-xs text-gray-500 mb-2">- OR -</div>
                     <input type="text" id="gal-url" placeholder="Paste Google Drive / Image Link" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none text-sm transition-colors placeholder-gray-500">
                     <button onclick="postGallery()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto shadow-lg shadow-gold-600/20 hover:shadow-gold-600/40 transform hover:-translate-y-0.5">Upload Photo</button>
+                </div>
+
+                <!-- Add Church Goal -->
+                <div class="glass-panel p-6 rounded-xl flex flex-col hover:border-gold-500/50 transition-colors duration-300">
+                    <h3 class="text-lg font-semibold text-gold-400 mb-4 flex items-center"><i class="fas fa-bullseye mr-2"></i>Add Church Goal</h3>
+                    <input type="text" id="goal-title" placeholder="Goal Title" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-3 border border-gray-600 focus:border-gold-500 outline-none transition-colors placeholder-gray-500">
+                    <textarea id="goal-desc" placeholder="Goal Description..." rows="2" class="w-full bg-gray-800/50 text-white px-3 py-2 rounded mb-4 border border-gray-600 focus:border-gold-500 outline-none transition-colors placeholder-gray-500"></textarea>
+                    <button onclick="addChurchGoal()" class="w-full bg-gold-600 hover:bg-gold-700 text-white py-2 rounded-lg transition mt-auto shadow-lg shadow-gold-600/20 hover:shadow-gold-600/40 transform hover:-translate-y-0.5">Add Goal</button>
+                </div>
+
+                <!-- Manage Requests -->
+                <div class="glass-panel p-6 rounded-xl flex flex-col hover:border-gold-500/50 transition-colors duration-300 lg:col-span-2">
+                    <h3 class="text-lg font-semibold text-gold-400 mb-4 flex items-center"><i class="fas fa-tasks mr-2"></i>Pending Requests</h3>
+                    <div class="flex gap-2 mb-4">
+                        <button onclick="switchAdminRequestTab('prayer')" id="tab-btn-prayer" class="flex-1 py-2 rounded-lg bg-gold-600 text-white font-bold transition-all">Prayer Requests</button>
+                        <button onclick="switchAdminRequestTab('testimony')" id="tab-btn-testimony" class="flex-1 py-2 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700 transition-all">Testimonies</button>
+                    </div>
+                    <div id="admin-requests-list" class="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Populated by JS -->
+                        <p class="text-center text-gray-500 text-sm py-4">No pending requests.</p>
+                    </div>
                 </div>
 
                 <!-- Upload PDF -->
@@ -346,6 +373,49 @@
             </div>
         </section>
 
+        <!-- Church Goals & Financial Help Section -->
+        <section id="goals" class="py-16 bg-gray-800 relative border-b border-gray-700">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <!-- Church Goals -->
+                    <div class="lg:col-span-2 reveal">
+                        <div class="flex items-center gap-3 mb-8">
+                            <i class="fas fa-bullseye text-3xl text-gold-500"></i>
+                            <h2 class="text-3xl font-display font-bold text-white text-glow">Our Church Goals</h2>
+                        </div>
+                        <div id="goals-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div id="no-goals" class="hidden text-center text-gray-500 py-8 bg-gray-900/30 rounded-xl border border-dashed border-gray-700">
+                            <p>No goals set yet.</p>
+                        </div>
+                    </div>
+
+                    <!-- Financial Help -->
+                    <div class="reveal delay-200">
+                        <div class="glass-panel rounded-2xl p-8 border-gold-500/20 hover:border-gold-500/40 transition-all h-full flex flex-col">
+                            <div class="w-16 h-16 bg-gold-500/10 rounded-full flex items-center justify-center mb-6 border border-gold-500/30">
+                                <i class="fas fa-hand-holding-heart text-3xl text-gold-500"></i>
+                            </div>
+                            <h3 class="text-2xl font-display font-bold text-white mb-4">Support Our Mission</h3>
+                            <p class="text-gray-300 leading-relaxed mb-8 font-light">
+                                Your generosity helps us continue our ministry, maintain our sanctuary, and reach out to the community. We are currently seeking financial support for our upcoming church projects and outreach programs.
+                            </p>
+                            <div class="mt-auto">
+                                <p class="text-gold-500 font-bold mb-4 flex items-center gap-2">
+                                    <i class="fas fa-info-circle"></i> For donations, please contact:
+                                </p>
+                                <div class="bg-gray-900/50 rounded-xl p-4 border border-gray-700">
+                                    <p class="text-white font-medium">gutadpentecostals@gmail.com</p>
+                                    <p class="text-gray-400 text-sm mt-1">Or visit us during our services.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Announcements Section -->
         <section id="announcements" class="py-20 bg-gray-900 relative">
             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
@@ -382,6 +452,80 @@
                 <div id="no-gallery" class="text-center text-gray-400 py-10 bg-gray-900/50 rounded-xl border border-dashed border-gray-700 reveal backdrop-blur-sm">
                     <i class="fas fa-circle-notch fa-spin text-4xl mb-3 text-gold-500"></i>
                     <p>Loading gallery...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prayer Requests & Testimonies Section -->
+        <section id="community" class="py-20 bg-gray-900 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                    <!-- Prayer Requests -->
+                    <div class="reveal">
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-hands-praying text-3xl text-gold-500"></i>
+                                <h2 class="text-3xl font-display font-bold text-white text-glow">Prayer Requests</h2>
+                            </div>
+                            <button onclick="toggleForm('prayer-form')" class="text-gold-500 hover:text-white transition-colors text-sm font-bold flex items-center gap-2">
+                                <i class="fas fa-plus-circle"></i> Submit Request
+                            </button>
+                        </div>
+
+                        <!-- Prayer Form -->
+                        <div id="prayer-form" class="hidden glass-panel rounded-2xl p-6 mb-8 border-gold-500/30 animate-fade-in-up">
+                            <h3 class="text-xl font-bold text-white mb-4">Submit Prayer Request</h3>
+                            <div class="space-y-4">
+                                <input type="text" id="pr-name" placeholder="Your Name" class="w-full bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-700 focus:border-gold-500 outline-none transition-colors">
+                                <input type="text" id="pr-for" placeholder="Prayer for who? (Optional)" class="w-full bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-700 focus:border-gold-500 outline-none transition-colors">
+                                <textarea id="pr-details" placeholder="Prayer details..." rows="3" class="w-full bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-700 focus:border-gold-500 outline-none transition-colors"></textarea>
+                                <div class="flex gap-3">
+                                    <button onclick="submitPrayerRequest()" class="flex-1 bg-gold-600 hover:bg-gold-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-gold-600/20">Submit</button>
+                                    <button onclick="toggleForm('prayer-form')" class="px-6 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="prayer-list" class="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div id="no-prayers" class="text-center text-gray-500 py-12 bg-gray-800/30 rounded-2xl border border-dashed border-gray-700">
+                            <p>No public prayer requests at this time.</p>
+                        </div>
+                    </div>
+
+                    <!-- Testimonies -->
+                    <div class="reveal delay-200">
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-comment-dots text-3xl text-gold-500"></i>
+                                <h2 class="text-3xl font-display font-bold text-white text-glow">Testimonies</h2>
+                            </div>
+                            <button onclick="toggleForm('testimony-form')" class="text-gold-500 hover:text-white transition-colors text-sm font-bold flex items-center gap-2">
+                                <i class="fas fa-plus-circle"></i> Share Testimony
+                            </button>
+                        </div>
+
+                        <!-- Testimony Form -->
+                        <div id="testimony-form" class="hidden glass-panel rounded-2xl p-6 mb-8 border-gold-500/30 animate-fade-in-up">
+                            <h3 class="text-xl font-bold text-white mb-4">Share Your Testimony</h3>
+                            <div class="space-y-4">
+                                <input type="text" id="test-name" placeholder="Your Name" class="w-full bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-700 focus:border-gold-500 outline-none transition-colors">
+                                <textarea id="test-details" placeholder="Your testimony..." rows="4" class="w-full bg-gray-800 text-white px-4 py-3 rounded-xl border border-gray-700 focus:border-gold-500 outline-none transition-colors"></textarea>
+                                <div class="flex gap-3">
+                                    <button onclick="submitTestimony()" class="flex-1 bg-gold-600 hover:bg-gold-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-gold-600/20">Submit</button>
+                                    <button onclick="toggleForm('testimony-form')" class="px-6 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-xl transition-all">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="testimony-list" class="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div id="no-testimonies" class="text-center text-gray-500 py-12 bg-gray-800/30 rounded-2xl border border-dashed border-gray-700">
+                            <p>No testimonies shared yet.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -582,7 +726,11 @@
             editingAnnouncementId: null,
             announcements: [],
             gallery: [],
-            resources: []
+            resources: [],
+            goals: [],
+            prayerRequests: [],
+            testimonies: [],
+            adminRequestTab: 'prayer'
         };
 
         // UI Utils
@@ -605,6 +753,16 @@
 
         window.toggleMobileMenu = function() {
             document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        // Simulated Email Notification
+        // In a production environment, this would call a backend API or Firebase Cloud Function
+        // to send a real email via SendGrid, Mailgun, or similar services.
+        window.notifyAdmin = function(type, data) {
+            const adminEmail = 'gutadpentecostals@gmail.com';
+            console.log(`[EMAIL NOTIFICATION SENT TO ${adminEmail}]`);
+            console.log(`Subject: Pending ${type} Request`);
+            console.log(`Body: A new ${type} has been submitted by ${data.name} and is awaiting your approval in the dashboard.`);
         }
 
         // Base64 converter with compression and optional limit
@@ -809,6 +967,8 @@
         window.postGallery = async function() {
             if (!state.isAdmin) return;
             const title = document.getElementById('gal-title').value.trim();
+            const date = document.getElementById('gal-date').value;
+            const place = document.getElementById('gal-place').value.trim();
             const fileInput = document.getElementById('gal-img');
             const urlInput = document.getElementById('gal-url').value.trim();
 
@@ -820,9 +980,16 @@
             btn.textContent = 'Uploading...';
 
             try {
+                const galleryData = { 
+                    title, 
+                    date: date ? new Date(date).toLocaleDateString() : null,
+                    place: place || null,
+                    timestamp: Date.now() 
+                };
+
                 if (urlInput) {
-                    let image = window.processDriveLink(urlInput);
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'gallery'), { title, image, timestamp: Date.now() });
+                    galleryData.image = window.processDriveLink(urlInput);
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'gallery'), galleryData);
                     window.showToast('Photo added to gallery!');
                 } else {
                     const files = Array.from(fileInput.files);
@@ -830,11 +997,10 @@
                     
                     for (const file of files) {
                         try {
-                            // Skip if not an image
                             if (!file.type.startsWith('image/')) continue;
                             
                             let image = await window.getBase64(file);
-                            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'gallery'), { title, image, timestamp: Date.now() });
+                            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'gallery'), { ...galleryData, image });
                             successCount++;
                         } catch (err) {
                             console.error("Failed to upload file:", file.name, err);
@@ -849,6 +1015,8 @@
                 }
                 
                 document.getElementById('gal-title').value = '';
+                document.getElementById('gal-date').value = '';
+                document.getElementById('gal-place').value = '';
                 document.getElementById('gal-url').value = '';
                 fileInput.value = '';
             } catch (e) {
@@ -937,9 +1105,266 @@
                 state.resources.sort((a, b) => b.timestamp - a.timestamp);
                 renderResources();
             }, (err) => handlePermError(err, 'resources'));
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'goals'), (snapshot) => {
+                state.goals = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                state.goals.sort((a, b) => b.timestamp - a.timestamp);
+                renderGoals();
+            }, (err) => handlePermError(err, 'goals'));
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'prayer_requests'), (snapshot) => {
+                state.prayerRequests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                state.prayerRequests.sort((a, b) => b.timestamp - a.timestamp);
+                renderPrayerRequests();
+                if (state.isAdmin) renderAdminRequests();
+            }, (err) => handlePermError(err, 'prayer_requests'));
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'testimonies'), (snapshot) => {
+                state.testimonies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                state.testimonies.sort((a, b) => b.timestamp - a.timestamp);
+                renderTestimonies();
+                if (state.isAdmin) renderAdminRequests();
+            }, (err) => handlePermError(err, 'testimonies'));
         }
 
-        // Announcement Management Functions
+        // Community & Goals Functions
+        window.toggleForm = function(id) {
+            const form = document.getElementById(id);
+            form.classList.toggle('hidden');
+            if (!form.classList.contains('hidden')) {
+                form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        window.addChurchGoal = async function() {
+            if (!state.isAdmin) return;
+            const title = document.getElementById('goal-title').value.trim();
+            const description = document.getElementById('goal-desc').value.trim();
+
+            if (!title || !description) return window.showToast('Fill all fields.', 'error');
+
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'goals'), {
+                    title, description, timestamp: Date.now()
+                });
+                document.getElementById('goal-title').value = '';
+                document.getElementById('goal-desc').value = '';
+                window.showToast('Church goal added!');
+            } catch (e) {
+                window.showToast('Error adding goal.', 'error');
+            }
+        }
+
+        window.deleteChurchGoal = async function(id) {
+            if (!state.isAdmin || !confirm('Delete this goal?')) return;
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'goals', id));
+                window.showToast('Goal deleted.');
+            } catch (e) {
+                window.showToast('Error deleting goal.', 'error');
+            }
+        }
+
+        window.submitPrayerRequest = async function() {
+            const name = document.getElementById('pr-name').value.trim();
+            const forWho = document.getElementById('pr-for').value.trim();
+            const details = document.getElementById('pr-details').value.trim();
+
+            if (!name || !details) return window.showToast('Name and details are required.', 'error');
+
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'prayer_requests'), {
+                    name, forWho, details, status: 'pending', timestamp: Date.now()
+                });
+                
+                window.notifyAdmin('Prayer Request', { name });
+                
+                document.getElementById('pr-name').value = '';
+                document.getElementById('pr-for').value = '';
+                document.getElementById('pr-details').value = '';
+                window.toggleForm('prayer-form');
+                window.showToast('Prayer request submitted for approval!');
+            } catch (e) {
+                window.showToast('Error submitting request.', 'error');
+            }
+        }
+
+        window.submitTestimony = async function() {
+            const name = document.getElementById('test-name').value.trim();
+            const details = document.getElementById('test-details').value.trim();
+
+            if (!name || !details) return window.showToast('Name and details are required.', 'error');
+
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'testimonies'), {
+                    name, details, status: 'pending', timestamp: Date.now()
+                });
+                
+                window.notifyAdmin('Testimony', { name });
+
+                document.getElementById('test-name').value = '';
+                document.getElementById('test-details').value = '';
+                window.toggleForm('testimony-form');
+                window.showToast('Testimony submitted for approval!');
+            } catch (e) {
+                window.showToast('Error submitting testimony.', 'error');
+            }
+        }
+
+        window.switchAdminRequestTab = function(tab) {
+            state.adminRequestTab = tab;
+            const prayerBtn = document.getElementById('tab-btn-prayer');
+            const testimonyBtn = document.getElementById('tab-btn-testimony');
+            
+            if (tab === 'prayer') {
+                prayerBtn.className = 'flex-1 py-2 rounded-lg bg-gold-600 text-white font-bold transition-all';
+                testimonyBtn.className = 'flex-1 py-2 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700 transition-all';
+            } else {
+                testimonyBtn.className = 'flex-1 py-2 rounded-lg bg-gold-600 text-white font-bold transition-all';
+                prayerBtn.className = 'flex-1 py-2 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700 transition-all';
+            }
+            renderAdminRequests();
+        }
+
+        window.approveRequest = async function(id, type) {
+            if (!state.isAdmin) return;
+            const collectionName = type === 'prayer' ? 'prayer_requests' : 'testimonies';
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id), {
+                    status: 'approved'
+                });
+                window.showToast('Request approved!');
+            } catch (e) {
+                window.showToast('Error approving request.', 'error');
+            }
+        }
+
+        window.deleteRequest = async function(id, type) {
+            if (!state.isAdmin || !confirm('Delete this request?')) return;
+            const collectionName = type === 'prayer' ? 'prayer_requests' : 'testimonies';
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', collectionName, id));
+                window.showToast('Request deleted.');
+            } catch (e) {
+                window.showToast('Error deleting request.', 'error');
+            }
+        }
+
+        // Render Functions
+        function renderGoals() {
+            const container = document.getElementById('goals-container');
+            const empty = document.getElementById('no-goals');
+            container.innerHTML = '';
+
+            if (state.goals.length === 0) {
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+
+            state.goals.forEach(goal => {
+                const adminBtn = state.isAdmin ? `<button onclick="deleteChurchGoal('${goal.id}')" class="absolute top-2 right-2 text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fas fa-trash-alt"></i></button>` : '';
+                container.innerHTML += `
+                    <div class="glass-panel p-6 rounded-xl relative group hover:border-gold-500/30 transition-all">
+                        ${adminBtn}
+                        <h4 class="text-xl font-bold text-gold-400 mb-2">${goal.title}</h4>
+                        <p class="text-gray-300 text-sm leading-relaxed">${goal.description}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function renderPrayerRequests() {
+            const list = document.getElementById('prayer-list');
+            const empty = document.getElementById('no-prayers');
+            list.innerHTML = '';
+
+            const approved = state.prayerRequests.filter(r => r.status === 'approved');
+
+            if (approved.length === 0) {
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+
+            approved.forEach(req => {
+                const forWho = req.forWho ? `<span class="text-gold-500/80 text-xs block mb-1">Prayer for: ${req.forWho}</span>` : '';
+                list.innerHTML += `
+                    <div class="bg-gray-800/50 p-5 rounded-2xl border border-gray-700 hover:border-gold-500/30 transition-all">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-8 h-8 bg-gold-500/10 rounded-full flex items-center justify-center text-gold-500 text-xs font-bold">
+                                ${req.name.charAt(0).toUpperCase()}
+                            </div>
+                            <span class="text-white font-bold text-sm">${req.name}</span>
+                        </div>
+                        ${forWho}
+                        <p class="text-gray-300 text-sm italic leading-relaxed">"${req.details}"</p>
+                    </div>
+                `;
+            });
+        }
+
+        function renderTestimonies() {
+            const list = document.getElementById('testimony-list');
+            const empty = document.getElementById('no-testimonies');
+            list.innerHTML = '';
+
+            const approved = state.testimonies.filter(r => r.status === 'approved');
+
+            if (approved.length === 0) {
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+
+            approved.forEach(test => {
+                list.innerHTML += `
+                    <div class="bg-gray-800/50 p-6 rounded-2xl border border-gray-700 hover:border-gold-500/30 transition-all relative">
+                        <i class="fas fa-quote-left absolute top-4 left-4 text-gold-500/10 text-4xl"></i>
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 bg-gold-500/10 rounded-full flex items-center justify-center text-gold-500 font-bold">
+                                ${test.name.charAt(0).toUpperCase()}
+                            </div>
+                            <span class="text-white font-bold">${test.name}</span>
+                        </div>
+                        <p class="text-gray-300 text-sm leading-relaxed relative z-10">"${test.details}"</p>
+                    </div>
+                `;
+            });
+        }
+
+        function renderAdminRequests() {
+            const list = document.getElementById('admin-requests-list');
+            list.innerHTML = '';
+
+            const requests = state.adminRequestTab === 'prayer' 
+                ? state.prayerRequests.filter(r => r.status === 'pending')
+                : state.testimonies.filter(r => r.status === 'pending');
+
+            if (requests.length === 0) {
+                list.innerHTML = `<p class="text-center text-gray-500 text-sm py-4">No pending ${state.adminRequestTab} requests.</p>`;
+                return;
+            }
+
+            requests.forEach(req => {
+                const subInfo = state.adminRequestTab === 'prayer' && req.forWho ? `<p class="text-[10px] text-gold-500">For: ${req.forWho}</p>` : '';
+                list.innerHTML += `
+                    <div class="bg-gray-800 p-3 rounded-lg border border-gray-700 flex flex-col gap-2">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-xs font-bold text-white">${req.name}</p>
+                                ${subInfo}
+                            </div>
+                            <div class="flex gap-1">
+                                <button onclick="approveRequest('${req.id}', '${state.adminRequestTab}')" class="bg-green-600 hover:bg-green-500 text-white p-1.5 rounded text-[10px]" title="Approve"><i class="fas fa-check"></i></button>
+                                <button onclick="deleteRequest('${req.id}', '${state.adminRequestTab}')" class="bg-red-600 hover:bg-red-500 text-white p-1.5 rounded text-[10px]" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-gray-400 italic line-clamp-2">"${req.details}"</p>
+                    </div>
+                `;
+            });
+        }
         window.deleteAnnouncement = async function(id) {
             if (!confirm('Are you sure you want to delete this announcement?')) return;
             try {
@@ -1075,6 +1500,23 @@
             }
 
             document.getElementById('modal-title').textContent = item.title;
+            
+            // Handle Place in Modal
+            const placeEl = document.getElementById('modal-place');
+            if (!placeEl) {
+                const newPlaceEl = document.createElement('p');
+                newPlaceEl.id = 'modal-place';
+                newPlaceEl.className = 'text-gold-400 text-sm mb-4 flex items-center gap-2 font-medium';
+                document.getElementById('modal-title').insertAdjacentElement('afterend', newPlaceEl);
+            }
+            
+            const currentPlaceEl = document.getElementById('modal-place');
+            if (item.place) {
+                currentPlaceEl.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${item.place}`;
+                currentPlaceEl.classList.remove('hidden');
+            } else {
+                currentPlaceEl.classList.add('hidden');
+            }
             
             const bodyEl = document.getElementById('modal-body');
             const textContainer = document.getElementById('modal-text-container');
@@ -1248,12 +1690,17 @@
 
             state.gallery.forEach(item => {
                 const safeItem = JSON.stringify(item).replace(/"/g, '&quot;');
+                const dateHtml = item.date ? `<span class="text-[10px] text-gold-500 font-bold uppercase tracking-wider block mb-1"><i class="far fa-calendar-alt mr-1"></i> ${item.date}</span>` : '';
+                const placeHtml = item.place ? `<span class="text-[10px] text-gray-400 block"><i class="fas fa-map-marker-alt mr-1"></i> ${item.place}</span>` : '';
+                
                 grid.innerHTML += `
                     <div onclick="openModal(${safeItem}, 'gallery')" class="relative group break-inside-avoid rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-gold-500/20 transition-all duration-500 cursor-pointer border border-gray-700">
                         <img src="${item.image}" alt="${item.title}" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                            <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                <p class="text-white font-bold text-lg text-glow">${item.title}</p>
+                            <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 w-full">
+                                ${dateHtml}
+                                <p class="text-white font-bold text-lg text-glow leading-tight">${item.title}</p>
+                                ${placeHtml}
                                 <div class="w-12 h-1 bg-gold-500 mt-2 rounded-full"></div>
                             </div>
                         </div>
